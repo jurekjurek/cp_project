@@ -5,6 +5,16 @@ from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import animation
 
 
+
+'''
+what is to be done here:
+Implement the equations for the effective potential 
+m ddot(r) = Nabla Ueff
+
+for the 2!! coordinates. Then start to add some interaction terms to that. It is probably just going to be more gravitational potentials on top of each other then...
+'''
+
+
 # Earth model
 
 def model_2BP(state, t):
