@@ -30,30 +30,28 @@ mu = 3.986004418E+05  # Earth's gravitational parameter
 def model_2BP(state, t):
     mu = 3.986004418E+05  # Earth's gravitational parameter  
                           # [km^3/s^2]
-    x = state[0]
-    y = state[1]
+    r = state[0]
+    # y = state[1]
     # z = state[2]
-    x_dot = state[2]
-    y_dot = state[3]
+    # x_dot = state[2]
+    r_dot = state[1]
     # z_dot = state[5]
-    # x_ddot = -mu * x / (x ** 2 + y ** 2) ** (3 / 2)
-    # y_ddot = -mu * y / (x ** 2 + y ** 2) ** (3 / 2)
-    x_ddot = - G * M * x / (x ** 2 + y ** 2) ** (3 / 2) #+ L * 2 * x / (m**2*(x ** 2 + y ** 2) ** (4 / 2)) + 3* G * M * L**2 * 4 * x / (m*c**2 * (x ** 2 + y ** 2) ** (6 / 2))
-    y_ddot = - G * M * y / (x ** 2 + y ** 2) ** (3 / 2) #+ L * 2 * y / (m**2*(x ** 2 + y ** 2) ** (4 / 2)) + 3* G * M * L**2 * 4 * y / (m*c**2 * (x ** 2 + y ** 2) ** (6 / 2))
+    r_ddot = - G * M / r**2 #+ L * 2  / (m**2*r**3) + 3* G * M * L**2 * 4 / (m*c**2 * r**5)
     # z_ddot = -mu * z / (x ** 2 + y ** 2 + z ** 2) ** (3 / 2)
-    dstate_dt = [x_dot, y_dot, x_ddot, y_ddot]
+    dstate_dt = [r_dot, r_ddot]
     return dstate_dt
 
 
 
 # Initial Conditions
-X_0 = -2500+10000 * G * M / mu # [km]
-Y_0 = -5500  * G * M / mu  # [km]
+# X_0 = -2500+10000 * G * M / mu # [km]
+# Y_0 = -5500  * G * M / mu  # [km]
 # Y_0 = 3400  # [km]
-VX_0 = 5 * G * M / mu  # [km/s]
+r_0 = 12500 * G * M / mu
+# VX_0 = 5 * G * M / mu  # [km/s]
 # VY_0 = 0.0  # [km/s]
-VY_0 = 5.0 * G * M / mu  # [km/s]
-state_0 = [X_0, Y_0, VX_0, VY_0]
+Vr_0 = 5.0 * G * M / mu  # [km/s]
+state_0 = [r_0, Vr_0]
 
 # Time Array
 t = np.linspace(0, 6*3600, 200)  # Simulates for a time period of 6
@@ -62,8 +60,8 @@ t = np.linspace(0, 6*3600, 200)  # Simulates for a time period of 6
 
 # Solving ODE
 sol = odeint(model_2BP, state_0, t)
-X_Sat = sol[:, 0]  # X-coord [km] of satellite over time interval 
-Y_Sat = sol[:, 1]  # Y-coord [km] of satellite over time interval
+r_Sat = sol[:, 0]  # X-coord [km] of satellite over time interval 
+# Y_Sat = sol[:, 1]  # Ycoord [km] of satellite over time interval
 # Z_Sat = sol[:, 2]  # Z-coord [km] of satellite over time interval
 
 
@@ -85,44 +83,47 @@ Y_Earth = r_Earth * np.sin(phi) * np.sin(theta)
 
 # Animation
 
-dataSet = np.array([X_Sat, Y_Sat])
+dataSet = np.array([r_Sat])
 numDataPoints = len(t)
 
 
-def animate_func(num):
-    if np.sqrt(dataSet[0,num+1]**2+ dataSet[1,num+1]**2) <= r_Earth:
-        line_ani.event_source.stop()
-        return None
-    # ax.clear()  # Clears the figure to update the line, point,   
-                # title, and axes
-    # ax.plot_su6rface(X_Earth, Y_Earth, Z_Earth, color='green', alpha=0.7)
-    # Updating Trajectory Line (num+1 due to Python indexing)
-    ax.plot(dataSet[0, :num+1], dataSet[1, :num+1], c='black')
-    # Updating Point Location 
-    ax.scatter(dataSet[0, num], dataSet[1, num], 
-               c='black', marker='o', s = 1)
+print(np.shape(dataSet), len(dataSet))
+print(dataSet[0])
 
-    # Setting Axes Limits
-    ax.set_xlim([-50000 * G * M / mu, 50000 * G * M / mu])
-    ax.set_ylim([-50000 * G * M / mu, 50000 * G * M / mu])
-    # ax.set_zlim3d([-10000, 10000])
+# def animate_func(num):
+#     # if np.sqrt(dataSet[0,num+1]**2+ dataSet[1,num+1]**2) <= r_Earth:
+#     #     line_ani.event_source.stop()
+#     #     return None
+#     # ax.clear()  # Clears the figure to update the line, point,   
+#                 # title, and axes
+#     # ax.plot_su6rface(X_Earth, Y_Earth, Z_Earth, color='green', alpha=0.7)
+#     # Updating Trajectory Line (num+1 due to Python indexing)
+#     ax.plot(dataSet[0, :num+1], dataSet[1, :num+1], c='black')
+#     # Updating Point Location 
+#     # ax.scatter(dataSet[0, num], dataSet[1, num], 
+#     #            c='black', marker='o', s = 1)
+
+#     # Setting Axes Limits
+#     ax.set_xlim([-50000 * G * M / mu, 50000 * G * M / mu])
+#     ax.set_ylim([-50000 * G * M / mu, 50000 * G * M / mu])
+#     # ax.set_zlim3d([-10000, 10000])
 
 
-    # fancier way of limiting, but it doesn't work with the animation
+#     # fancier way of limiting, but it doesn't work with the animation
 
-    # xyzlim = np.array([ax.get_xlim3d(), ax.get_ylim3d(),      
-    #                ax.get_zlim3d()]).T
-    # XYZlim = np.asarray([min(xyzlim[0]), max(xyzlim[1])])
-    # ax.set_xlim3d(XYZlim)
-    # ax.set_ylim3d(XYZlim)
-    # ax.set_zlim3d(XYZlim * 3/4)
+#     # xyzlim = np.array([ax.get_xlim3d(), ax.get_ylim3d(),      
+#     #                ax.get_zlim3d()]).T
+#     # XYZlim = np.asarray([min(xyzlim[0]), max(xyzlim[1])])
+#     # ax.set_xlim3d(XYZlim)
+#     # ax.set_ylim3d(XYZlim)
+#     # ax.set_zlim3d(XYZlim * 3/4)
 
-    # Adding Figure Labels
-    ax.set_title('Trajectory \nTime = ' + str(np.round(t[num],    
-                 decimals=2)) + ' sec')
-    ax.set_xlabel('x')
-    ax.set_ylabel('y')
-    # ax.set_zlabel('z')
+#     # Adding Figure Labels
+#     ax.set_title('Trajectory \nTime = ' + str(np.round(t[num],    
+#                  decimals=2)) + ' sec')
+#     ax.set_xlabel('x')
+#     ax.set_ylabel('y')
+#     # ax.set_zlabel('z')
     
 
 
@@ -131,7 +132,7 @@ def animate_func(num):
 
 # Plotting Earth and Orbit
 fig = plt.figure()
-ax = plt.axes()
+plt.plot(dataSet[0])
 # ax.plot3D(X_Sat, Y_Sat, Z_Sat, 'black')
 # ax.view_init(30, 145)  # Changing viewing angle (adjust as needed)
 # plt.title('Two-Body Orbit')
@@ -152,12 +153,13 @@ ax = plt.axes()
 # ax.plot3D(dataSet[0, 0], dataSet[1, 0], dataSet[2, 0],     
 #                c='black', marker='o')
 
-line_ani = animation.FuncAnimation(fig, animate_func, interval=100,   
-                                   frames=numDataPoints)
+# line_ani = animation.FuncAnimation(fig, animate_func, interval=100,   
+#                                    frames=numDataPoints)
 
 # ax.plot_surface(X_Earth, Y_Earth, color='blue', alpha=0.4)
 # earth_plot = plt.Circle((0,0),  r_Earth, color = 'blue')
 # ax.add_patch(earth_plot)
+plt.ylabel('r')
 plt.show()
 
 
