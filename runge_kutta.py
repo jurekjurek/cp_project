@@ -17,8 +17,8 @@ M = 2 #10**6 * m                   # mass of BH
 L = 100
 
 A = 1 # G*M
-B = L**2 / m**2
-C = 3*G*M*L**2 / (m*c**2)
+B = 0.005 #L**2 / m**2
+C = 0.8 #3*G*M*L**2 / (m*c**2)
 
 
 r0 = 1
@@ -39,7 +39,7 @@ def f2(t,r,v, k=1, m=1):
 # du/dx = f(x)
 def v_(t,r,v):
     # r = np.sqrt(x**2+y**2)
-    return -A/r**2 #+ B/(r**3)+C/(r**4)
+    return -A/r**2 - B/(r**3)-C/(r**4)
 
 def r_(t,r,v):
     return v
