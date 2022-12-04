@@ -39,7 +39,7 @@ def f2(t,r,v, k=1, m=1):
 # du/dx = f(x)
 def v_(t,r,v):
     # r = np.sqrt(x**2+y**2)
-    return -A/r**2 - B/(r**3)-C/(r**4)
+    return -A/r**2 + B/(r**3)-C/(r**4)
 
 def r_(t,r,v):
     return v

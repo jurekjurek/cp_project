@@ -1,0 +1,23 @@
+
+
+- can we consider the angular momentum conserved? 
+- can we assume constant velocity? so that ddot(phi) = 0
+- how should we implement the stabil orbit in the code? 
+	- is it going to work only by implementing the formulas? 
+	- or do we have to say if R = 3*Rs -> r = const.
+	- and if r smaller -> U = Ueff -> star falls in
+
+- And then if r > Rs -> just kepler potential
+(because outside of 3*Rs Kepler orbits are possible, so we neglect the 1/r^3 term)
+
+- We just have to simulate it properly I guess, not have all the physics completely correct. 
+
+
+Then do it for many particles 
+
+That's where Rt comes in 
+
+- if r <= Rt -> activate Ueff at the same time for all particles that make up star
+- and make the particles interact with each other 
+
+- the equation for the black hole potential would change, since L is not conserved anymore  
