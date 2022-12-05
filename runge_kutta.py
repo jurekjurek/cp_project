@@ -20,9 +20,13 @@ A = 1 # G*M
 B = 0.005 #L**2 / m**2
 C = 0.8 #3*G*M*L**2 / (m*c**2)
 
-
-r0 = 1
+# small r, high v are most intersting region for us 
+r0 = 2.1        #0.83 #+ 0.003
 v0 = 1
+
+# escape velocity for newtonian potential
+# v0 = np.sqrt(2/r0) 
+
 t = np.linspace(0,1000,1000)
 
 t0 = t[0]
