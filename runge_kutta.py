@@ -55,6 +55,8 @@ r0_32 = 1.9
 r0_31 = np.sqrt((r0_32**2)+a**2)
 r0_33 = np.sqrt((r0_32**2)+a**2)
 
+# we have to solve 5 different differential eqs for each particle with mass mij
+# In the end we will sum up the movements of the particles to get the resulting movement of the star 
 
 # escape velocity for newtonian potential
 # v0 = np.sqrt(2/r0) 
