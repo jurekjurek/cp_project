@@ -23,7 +23,7 @@ C = 0.8 #3*G*M*L**2 / (m*c**2)
 # small r, high v are most intersting region for us 
 r0 = 1
 
-v0 = 1
+v0 = 0
 
 
 
@@ -56,7 +56,7 @@ r0_31 = np.sqrt((r0_32**2)+a**2)
 r0_33 = np.sqrt((r0_32**2)+a**2)
 
 # we have to solve 5 different differential eqs for each particle with mass mij
-# In the end we will sum up the movements of the particles to get the resulting movement of the star 
+# In the end we will sum up the movements of the particles to get the resulting movement of the
 
 # escape velocity for newtonian potential
 # v0 = np.sqrt(2/r0) 
@@ -191,6 +191,10 @@ plt.show()
 
 
 
-
+# betrachte als stern
+# sobald r<R_krit:
+# Some testparticles pushed off
+# for n layers of the star 
+# Drimp angucken explizit
 
 
