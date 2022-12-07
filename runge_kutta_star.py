@@ -55,7 +55,7 @@ def L(x,y, m):
     return r*m*v_x0
 
 L = L(x0, y0, m)
-print(L)
+
 
 A = G*M
 B = L**2 / m**2             # 0.005
@@ -122,6 +122,38 @@ t = np.linspace(0,100000,10000)
 t0 = t[0]
 
 h = len(t)
+
+
+def grav_layer(split = 5):
+    '''
+    Calculate the different radii for the different layers
+    assuming constant density
+    '''
+    m = m 
+    r1 = r_star / (split**(1/3)) 
+    r1 = r1
+    r2 = (2**(1/3)-1)*r1
+    r3 = (3**(1/3)-2**(1/3))*r1
+    r4 = (4**(1/3)-3**(1/3))*r1
+    r5 = r_star
+
+    # gravitational pull on i-th layer by star
+    F5 = G*1/5*m*(m-1/5*m)/(r5**2)
+    F4 = G*1/5*m*(m-2/5*m)/(r4**2)
+    F3 = G*1/5*m*(m-3/5*m)/(r3**2)
+    F2 = G*1/5*m*(m-4/5*m)/(r2**2)
+    return F2, F3, F4, F5
+
+
+
+'''
+What we have to do now:
+Look at every timestep -> if F_BH on the ith layer is greater than the constant value of F_i
+-> layer turns into n particles
+-> these particles are only interacting with the black hole now, not with the star, not with each other 
+-  all of these particles have the same initial velocity, but different initial positions
+'''
+
 
 # as proposed in the paper: 
 # https://arxiv.org/pdf/2008.04922.pdf
@@ -208,54 +240,5 @@ def my_rk4(h = 0.2):
     return x, y, v_x, v_y
 
 
-# v_res, r_res = rk4()
-# print(np.shape(v_res), np.shape(r_res))
-
-my_x, my_y, my_v_x, my_v_y = my_rk4()
-my_r = np.sqrt(my_x**2+ my_y**2)
-
-
-plt.figure()
-# plt.plot(my_x, my_y)
-
-plt.xlabel('X-coordinate of the particle')
-# plt.ylabel('Y-coordinate of the particle')
-# plt.scatter(my_x[0], my_y[0], label = 'beginning')
-# plt.scatter(my_x[-1], my_y[-1], label = 'end')
-plt.scatter(0,0, label= 'Black Hole', color = 'black')#, s = 300)
-plt.scatter(0,-r_isco, label = 'isco radius')
-plt.scatter(0,-r_ss, label = 'Schwarzschild radius')
-plt.scatter(0,-r_tidal, label = 'Tidal radius for star')
-# if we maybe want to do it more fancy:
-#
-# plt.Circle((0,0), 10, color = 'black', fill = False, lw = 2)
-
-# plt.xlim(-y0*2, y0*2)
-# plt.ylim(-y0*2, y0*2)
-plt.title('Motion of the particle in the Kepler field - solved with RK4')
-plt.legend(loc = 'upper right')
-plt.show()
-
-# plt.figure()
-# plt.plot(t[:len(my_x)], my_r)
-# plt.xlabel('Time')
-# plt.ylabel('Solution of r(t)')
-# plt.legend()
-# plt.title('r(t) = $\sqrt{x(t)^2+y(t)^2}$ over time')
-# plt.show()
-
-# plt.figure()
-# plt.plot(t[:len(my_r)], my_v)
-# plt.xlabel('Time')
-# plt.ylabel('Solution of v(t)')
-# plt.show()
-
-
-
-# betrachte als stern
-# sobald r<R_krit:
-# Some testparticles pushed off
-# for n layers of the star 
-# Drimp angucken explizit
 
 
