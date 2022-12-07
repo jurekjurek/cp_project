@@ -14,7 +14,7 @@ c = constants.speed_of_light
 m = 1.989 * 10**30              # mass of the sun in kg
 M = 10**6 * m                   # mass of BH
 
-r_star = 1 
+r_star = 696340*10**3
 
 '''
 Initial conditions
@@ -218,21 +218,22 @@ my_r = np.sqrt(my_x**2+ my_y**2)
 
 
 plt.figure()
-plt.plot(my_x, my_y)
+# plt.plot(my_x, my_y)
 
 plt.xlabel('X-coordinate of the particle')
-plt.ylabel('Y-coordinate of the particle')
-plt.scatter(my_x[0], my_y[0], label = 'beginning')
-plt.scatter(my_x[-1], my_y[-1], label = 'end')
+# plt.ylabel('Y-coordinate of the particle')
+# plt.scatter(my_x[0], my_y[0], label = 'beginning')
+# plt.scatter(my_x[-1], my_y[-1], label = 'end')
 plt.scatter(0,0, label= 'Black Hole', color = 'black')#, s = 300)
 plt.scatter(0,-r_isco, label = 'isco radius')
 plt.scatter(0,-r_ss, label = 'Schwarzschild radius')
+plt.scatter(0,-r_tidal, label = 'Tidal radius for star')
 # if we maybe want to do it more fancy:
 #
 # plt.Circle((0,0), 10, color = 'black', fill = False, lw = 2)
 
-plt.xlim(-y0*2, y0*2)
-plt.ylim(-y0*2, y0*2)
+# plt.xlim(-y0*2, y0*2)
+# plt.ylim(-y0*2, y0*2)
 plt.title('Motion of the particle in the Kepler field - solved with RK4')
 plt.legend(loc = 'upper right')
 plt.show()
