@@ -123,13 +123,20 @@ t0 = t[0]
 
 h = len(t)
 
+def r_help(A, B, C):
+    '''
+    C is the force on the ith particle
+    '''
+    return ((2/3)**(1/3) * A)/(np.sqrt(3) * np.sqrt(27 * B**2 * C**4 - 4 * A**3 * C**3) + 9 * B * C**2)**(1/3) + (np.sqrt(3) * np.sqrt(27 * B**2 * C**4 - 4 * A**3 * C**3) + 9 * B * C**2)**(1/3)/(2**(1/3) * 3**(2/3) * C)
 
-def grav_layer(split = 5):
+    
+
+def grav_layer(r_star, m_star, split = 5):
     '''
     Calculate the different radii for the different layers
     assuming constant density
     '''
-    m = m 
+    m = m_star 
     r1 = r_star / (split**(1/3)) 
     r1 = r1
     r2 = (2**(1/3)-1)*r1
@@ -138,11 +145,34 @@ def grav_layer(split = 5):
     r5 = r_star
 
     # gravitational pull on i-th layer by star
-    F5 = G*1/5*m*(m-1/5*m)/(r5**2)
-    F4 = G*1/5*m*(m-2/5*m)/(r4**2)
-    F3 = G*1/5*m*(m-3/5*m)/(r3**2)
-    F2 = G*1/5*m*(m-4/5*m)/(r2**2)
-    return F2, F3, F4, F5
+    F5 = G*1/5*m*(m-1/5*m)/(r4**2)
+    F4 = G*1/5*m*(m-2/5*m)/(r3**2)
+    F3 = G*1/5*m*(m-3/5*m)/(r2**2)
+    F2 = G*1/5*m*(m-4/5*m)/(r1**2)
+
+    A = G*M*m
+    B = 3*(G*M/c)**2*m
+
+    print(A, B, F3)
+    r2_thr = r_help(A,B,F2)
+    r3_thr = r_help(A,B,F3)
+    r4_thr = r_help(A,B,F4)
+    r5_thr = r_help(A,B,F5)
+    # eq to solve: -A/r^2 - B/r^3 = -F_i for r
+
+    return r2_thr, r3_thr, r4_thr, r5_thr
+
+
+
+
+r2, r3, r4, r5 = grav_layer(r_star, m)
+
+print(r2, r3, r4, r5)
+print(r2/r_tidal, r3/r_tidal, r4/r_tidal, r5/r_tidal)
+
+print(r2/r_isco, r3/r_isco, r4/r_isco, r5/r_isco)
+
+
 
 
 
@@ -186,7 +216,7 @@ def y_(t,x,y,v_x,v_y):
 
 
 
-def my_rk4(h = 0.2):
+def my_rk4(x0, v_x0, y0, v_y0, h = 0.2):
     '''
     This function solves the differential equations (the equation of motion)
     for the x- and y-component of a particle. At each step, we evaluate v[i] for x and y which corresponds to their derivatives 
@@ -240,5 +270,21 @@ def my_rk4(h = 0.2):
     return x, y, v_x, v_y
 
 
+# def test():
+#     '''
+#     function that calculates, when the F_BH on the i-th layer of the star is bigger than the gravitational pull of the star itself
+#     '''
+#     r = np.sqrt(x**2+y**2)
+#     F_bh = -A / r**2 - 3*(G*M/c)**2 / r**3
+#     F2, F3, F4, F5 = grav_layer(r_star, m)
+#     for i in range(len(t)):
+#         if F_bh <= F2:
+#             print('Distance for first layer to drop: ', r)
+#         if F_bh <= F3:
+#             print('Distance for second layer to drop: ', r)
+#         if F_bh <= F4:
+#             print('Distance for third layer to drop: ', r)
+#         if F_bh <= F5:
+#             print('Distance for fourth layer to drop: ', r)
 
-
+# test()
