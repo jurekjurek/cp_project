@@ -127,9 +127,56 @@ def r_help(A, B, C):
     '''
     C is the force on the ith particle
     '''
-    return ((2/3)**(1/3) * A)/(np.sqrt(3) * np.sqrt(27 * B**2 * C**4 - 4 * A**3 * C**3) + 9 * B * C**2)**(1/3) + (np.sqrt(3) * np.sqrt(27 * B**2 * C**4 - 4 * A**3 * C**3) + 9 * B * C**2)**(1/3)/(2**(1/3) * 3**(2/3) * C)
 
-    
+    # print('################################')
+    # print((27 * B**2 * C**4 - 4 * A**3 * C**3)**(1/2))
+    # print(27 * B**2 * C**4 - 4 * A**3 * C**3)
+    # print('################################')
+
+    r_thr =  ((2/3)**(1/3) * A)/(np.sqrt(3) * (27 * B**2 * C**4 - 4 * A**3 * C**3)**(1/2) + 9 * B * C**2)**(1/3) + (np.sqrt(3) * (27 * B**2 * C**4 - 4 * A**3 * C**3)**(1/2) + 9 * B * C**2)**(1/3)/(2**(1/3) * 3**(2/3) * C)
+
+    return r_thr
+
+def r_help_bh(A,B,C,D):
+    A = G*M
+    B = L**2 / m**2             # 0.005
+    C = 3*G*M*L**2 / (m*c**2)   # 0.8
+
+# Try, aber hat nicht funktioniert ... nur nan als number bekommen
+
+# def grav_layer(r_star, m_star, split = 5):
+#     '''
+#     Calculate the different radii for the different layers
+#     assuming constant density
+#     '''
+#     m = m_star 
+#     r1 = r_star / (split**(1/3)) 
+#     r1 = r1
+#     r2 = (2**(1/3)-1)*r1
+#     r3 = (3**(1/3)-2**(1/3))*r1
+#     r4 = (4**(1/3)-3**(1/3))*r1
+#     r5 = r_star
+
+#     # gravitational pull on i-th layer by star
+#     F5 = G*1/5*m*(m-1/5*m)/(r4**2)
+#     F4 = G*1/5*m*(m-2/5*m)/(r3**2)
+#     F3 = G*1/5*m*(m-3/5*m)/(r2**2)
+#     F2 = G*1/5*m*(m-4/5*m)/(r1**2)
+
+   
+
+
+#     A = G*M*m
+#     B = 3*(G*M/c)**2*m
+
+#     print(A, B, F3)
+#     r2_thr = r_help(A,B,F2).real
+#     r3_thr = r_help(A,B,F3).real
+#     r4_thr = r_help(A,B,F4).real
+#     r5_thr = r_help(A,B,F5).real
+#     # eq to solve: -A/r^2 - B/r^3 = -F_i for r
+
+#     return r2_thr, r3_thr, r4_thr, r5_thr
 
 def grav_layer(r_star, m_star, split = 5):
     '''
@@ -137,31 +184,34 @@ def grav_layer(r_star, m_star, split = 5):
     assuming constant density
     '''
     m = m_star 
-    r1 = r_star / (split**(1/3)) 
-    r1 = r1
-    r2 = (2**(1/3)-1)*r1
-    r3 = (3**(1/3)-2**(1/3))*r1
-    r4 = (4**(1/3)-3**(1/3))*r1
+    r1 = r_star / 5
+    r2 = 2*r1
+    r3 = 3*r1
+    r4 = 4*r1
     r5 = r_star
 
     # gravitational pull on i-th layer by star
-    F5 = G*1/5*m*(m-1/5*m)/(r4**2)
-    F4 = G*1/5*m*(m-2/5*m)/(r3**2)
-    F3 = G*1/5*m*(m-3/5*m)/(r2**2)
-    F2 = G*1/5*m*(m-4/5*m)/(r1**2)
+    F5 = G*1/5*m*(m-1/5*m)/((r4)**2)
+    F4 = G*1/5*m*(m-2/5*m)/((r3)**2)
+    F3 = G*1/5*m*(m-3/5*m)/((r2)**2)
+    F2 = G*1/5*m*(m-4/5*m)/((r1)**2)
+    F_whole_star = G*m**2/(r_star/2)**2
 
     A = G*M*m
     B = 3*(G*M/c)**2*m
 
+    print(F2, F3, F4, F5) 
+
     print(A, B, F3)
-    r2_thr = r_help(A,B,F2)
-    r3_thr = r_help(A,B,F3)
-    r4_thr = r_help(A,B,F4)
-    r5_thr = r_help(A,B,F5)
+    r2_thr = r_help(A,B,F2).real
+    r3_thr = r_help(A,B,F3).real
+    r4_thr = r_help(A,B,F4).real
+    r5_thr = r_help(A,B,F5).real
+
+    r_whole_star = r_help(A,B, F_whole_star).real
     # eq to solve: -A/r^2 - B/r^3 = -F_i for r
 
     return r2_thr, r3_thr, r4_thr, r5_thr
-
 
 
 
@@ -205,6 +255,7 @@ def v_y_(t,x,y,v_x,v_y):
         return -A*y / r**3 - 3*(G*M/c)**2*y / r**4
     else: 
         return -A*y / r**3 + B*y / r**4 - C*y / r**5
+
 # this acts as v = dot(x) and v = dot(y)
 def x_(t,x,y,v_x,v_y):
     return v_x
@@ -288,3 +339,34 @@ def my_rk4(x0, v_x0, y0, v_y0, h = 0.2):
 #             print('Distance for fourth layer to drop: ', r)
 
 # test()
+
+
+# write a function that creates multiple particles out of a layer
+
+def particles(layer, x_star, y_star, vx_star, vy_star, number_of_particles=5):
+    '''
+    All particles have the same velocity but different initial positions
+    '''
+    vx0 = vx_star
+    vy0 = vy_star
+
+    # x10 = 
+    # x20 = 
+    # x30 = 
+    # x40 = 
+    # x50 = 
+
+    # y10 = 
+    # y20 = 
+    # y30 = 
+    # y40 = 
+    # y50 = 
+
+
+    # for i in range(number_of_particles):
+
+    
+
+
+
+
