@@ -20,11 +20,14 @@ r_star = 696340*10**3
 Initial conditions
 '''
 
+
+r_tidal = r_star * (M/m)**(1/3)
+
 # we're gonna use kepler = 2 potential
 # as soon as r<r_isco the orbits become unstable
 
 x0 =    0
-y0 =    8*10**9     # close to the isco radius
+y0 =    r_tidal * 2#8*10**9     # close to the isco radius
 # v_x0 =  10**8
 v_y0 =  0
 
@@ -117,7 +120,7 @@ v_x0 = np.sqrt(A/y0)
 # escape velocity for newtonian potential
 # v0 = np.sqrt(2/r0) 
 
-t = np.linspace(0,100000,10000)
+t = np.linspace(0,100000,200000)
 
 t0 = t[0]
 
@@ -214,6 +217,71 @@ def my_rk4(h = 0.2):
 my_x, my_y, my_v_x, my_v_y = my_rk4()
 my_r = np.sqrt(my_x**2+ my_y**2)
 
+
+###################################################################################################################################################
+#               Working Animation of the orbit
+###################################################################################################################################################
+
+# dataSet = np.array([my_x, my_y])
+# numDataPoints = int(len(t)*100)
+
+
+# def animate_func(num):
+#     # if np.sqrt(dataSet[0,num+1]**2+ dataSet[1,num+1]**2) <= r_Earth:
+#     #     line_ani.event_source.stop()
+#     #     return None
+#     ax.clear()  # Clears the figure to update the line, point,   
+#                 # title, and axes
+#     # ax.plot_su6rface(X_Earth, Y_Earth, Z_Earth, color='green', alpha=0.7)
+#     # Updating Trajectory Line (num+1 due to Python indexing)
+#     ax.plot(dataSet[0, :(num+1)*50], dataSet[1, :(num+1)*50], c='black')
+#     # Updating Point Location 
+#     ax.scatter(dataSet[0, num], dataSet[1, num], 
+#                c='black', marker='o', s = 1)
+
+#     ax.scatter(0,0, label= 'Black Hole', color = 'black')#, s = 300)
+#     ax.scatter(0,-r_isco, label = 'isco radius')
+#     ax.scatter(0,-r_ss, label = 'Schwarzschild radius')
+#     ax.scatter(0,-r_tidal, label = 'Tidal radius for star')
+
+#     # Setting Axes Limits
+#     ax.set_xlim([-y0*2, y0*2])
+#     ax.set_ylim([-y0*2, y0*2])
+#     # ax.set_zlim3d([-10000, 10000])
+
+
+#     # fancier way of limiting, but it doesn't work with the animation
+
+#     # xyzlim = np.array([ax.get_xlim3d(), ax.get_ylim3d(),      
+#     #                ax.get_zlim3d()]).T
+#     # XYZlim = np.asarray([min(xyzlim[0]), max(xyzlim[1])])
+#     # ax.set_xlim3d(XYZlim)
+#     # ax.set_ylim3d(XYZlim)
+#     # ax.set_zlim3d(XYZlim * 3/4)
+
+#     # Adding Figure Labels
+#     ax.set_title('Trajectory \nTime = ' + str(np.round(t[num],    
+#                  decimals=2)) + ' sec')
+#     ax.set_xlabel('x')
+#     ax.set_ylabel('y')
+#     ax.legend()
+    
+
+
+# fig = plt.figure()
+# ax = plt.axes()
+
+# line_ani = animation.FuncAnimation(fig, animate_func, interval=1,   
+#                                    frames=numDataPoints)
+
+
+
+
+# plt.show()
+
+###################################################################################################################################################
+#               Simple 2d-plot of trajectory
+###################################################################################################################################################
 
 plt.figure()
 plt.plot(my_x, my_y)
