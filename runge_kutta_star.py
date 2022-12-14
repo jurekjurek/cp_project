@@ -23,9 +23,11 @@ Initial conditions
 
 # we're gonna use kepler = 2 potential
 # as soon as r<r_isco the orbits become unstable
+# tidal radius
+r_tidal = r_star * (M/m)**(1/3)
 
 x0 =    0
-y0 =    8*10**9     # close to the isco radius
+y0 =    1.2*r_tidal #8*10**9     # close to the isco radius
 # v_x0 =  10**8
 v_y0 =  0
 
@@ -300,10 +302,10 @@ Keine Konstante Density annehmen!!!!!
 So funktioniert es für den Tidal Radius, guck nachher weiter!!!!
 '''
 
-r1, r2,r3,r4,r5 = grav_layer(r_star, m)
+# r1, r2,r3,r4,r5 = grav_layer(r_star, m)
 
 # print(r2, r3, r4, r5)
-print(r1/r_tidal, r2/r_tidal, r3/r_tidal, r4/r_tidal, r5/r_tidal)
+# print(r1/r_tidal, r2/r_tidal, r3/r_tidal, r4/r_tidal, r5/r_tidal)
 
 
 
@@ -350,7 +352,7 @@ def my_rk4(x0, v_x0, y0, v_y0, star, h = 0.2):
     Since for the (i+1)-th step, we need the values of x, y, v_x and v_y for the i-th step, for each step we calculate these 4 values
     star is a variable that tells us what kind of object we are solving the eom for
     '''
-    F1,F2,F3,F4 = grav_layer(r_star, m)
+    # F1,F2,F3,F4 = grav_layer(r_star, m)
     x = np.zeros(len(t))
     v_x = np.zeros(len(t))
     y = np.zeros(len(t))
@@ -363,10 +365,11 @@ def my_rk4(x0, v_x0, y0, v_y0, star, h = 0.2):
     # lists to safe x,y,vx,vy for when the star crosses certain thresholds
     a_secure = 0            # to make sure of sth, gleich erklären
 
-    x_save = []
-    y_save = [] 
-    vx_save = [] 
-    vy_save = []
+    # create arrays to store the position and velocity of the star for when each layer separates
+    x_save =    np.zeros(5)
+    y_save =    np.zeros(5)
+    vx_save =   np.zeros(5) 
+    vy_save =   np.zeros(5)
 
     for i in range(0,len(t)-1):
         k1x =   (x_(    t[i], x[i], y[i], v_x[i], v_y[i]))
@@ -412,52 +415,55 @@ def my_rk4(x0, v_x0, y0, v_y0, star, h = 0.2):
             # (a_secure makes sure that we only divide each layer into particles once and makes sure we can only split the i-1 th layer if we already split up the ith layer)
             # outermost (5th) shell:
             if np.sqrt(x[i]**2+y[i]**2) <= r_tidal*1.02 and a_secure == 0:
-                x_save.append(x[i])
-                y_save.append(y[i])
-                vx_save.append(v_x[i])
-                vy_save.append(v_y[i])
+                x_save[i] = (x[i])
+                y_save[i] = (y[i])
+                vx_save[i] = (v_x[i])
+                vy_save[i] = (v_y[i])
                 a_secure = 1
 
             # 4th shell:
             if np.sqrt(x[i]**2+y[i]**2) <= r_tidal*1.01 and a_secure == 1:
-                x_save.append(x[i])
-                y_save.append(y[i])
-                vx_save.append(v_x[i])
-                vy_save.append(v_y[i])
+                x_save[i] = (x[i])
+                y_save[i] = (y[i])
+                vx_save[i] = (v_x[i])
+                vy_save[i] = (v_y[i])
                 a_secure = 2
 
             # 3rd shell:
             if np.sqrt(x[i]**2+y[i]**2) <= r_tidal*1.00 and a_secure == 2:
-                x_save.append(x[i])
-                y_save.append(y[i])
-                vx_save.append(v_x[i])
-                vy_save.append(v_y[i])
+                x_save[i] = (x[i])
+                y_save[i] = (y[i])
+                vx_save[i] = (v_x[i])
+                vy_save[i] = (v_y[i])
                 a_secure = 3
 
             # 2nd shell:
             if np.sqrt(x[i]**2+y[i]**2) <= r_tidal*0.99 and a_secure == 3:
-                x_save.append(x[i])
-                y_save.append(y[i])
-                vx_save.append(v_x[i])
-                vy_save.append(v_y[i])
+                x_save[i] = (x[i])
+                y_save[i] = (y[i])
+                vx_save[i] = (v_x[i])
+                vy_save[i] = (v_y[i])
                 a_secure = 4
 
             # innermost (1st) shell:
             # if the innermost shell turns into particles, the star does not exist anymore as a star, so this runge kutta for-loop stops
             if np.sqrt(x[i]**2+y[i]**2) <= r_tidal*0.98 and a_secure == 4:
-                x_save.append(x[i])
-                y_save.append(y[i])
-                vx_save.append(v_x[i])
-                vy_save.append(v_y[i])   
+                x_save[i] = (x[i])
+                y_save[i] = (y[i])
+                vx_save[i] = (v_x[i])
+                vy_save[i] = (v_y[i])   
                 a_secure = 5 
                 break
 
-    if len(x_save) != 5 or len(y_save) != 5 or len(vx_save) != 5 or len(vy_save) != 5:
-        print('Not every layer has turned into a star. Returning None')
-        return None 
+     
 
-    return x, y, v_x, v_y
-
+    if star == True:
+        if len(x_save) != 5 or len(y_save) != 5 or len(vx_save) != 5 or len(vy_save) != 5:
+            print('Not every layer has turned into a star. Break.')
+            # return x, y, v_x, v_y
+        return x, y, v_x, v_y, x_save, y_save, vx_save, vy_save
+    if star == False:
+        return x, y, v_x, v_y
 
 
 
@@ -502,9 +508,12 @@ def particles(r_layer, x_star, y_star, vx_star, vy_star, number_of_particles=8):
     x_is = x_is * r_layer
     y_is = y_is * r_layer
 
-    for i in range(number_of_particles):
-        x_is[i] = x_star + x_is[i]
-        y_is[i] = y_star + y_is[i]    
+    x_is = x_is + x_star
+    y_is = y_is + y_star 
+
+    # for i in range(number_of_particles):
+    #     x_is[i] = x_star + x_is[i]
+    #     y_is[i] = y_star + y_is[i]    
 
     return x_is, y_is
 
@@ -529,7 +538,7 @@ def execute():
     # x_is_5 = np.zeros(number_of_particles)
     # x_is = np.array([x_is_1, x_is_2, x_is_3, x_is_4, x_is_5])
 
-    # x_is and y_is will consist of the initial conditions (x and y) for every particle
+    # x_is and y_is will consist of the initial conditions (x and y) for every particle in every layer
     x_is = np.zeros((number_of_layers, number_of_particles))
     y_is = x_is
     # r_layer_list = grav_layer(r_star, m)
@@ -538,32 +547,55 @@ def execute():
     # we get x_star, y_star, vx_star ... from calling rk 4 for the star 
     # but! These will also be 1-dim np.arrays with length 5 (for every layer)
     # so: the velocity of the star when the outermost layer separated was: vx_star[0]
-    x_star, y_star, vx_star, vy_star = 
+    # my_x, ... describes the actual movement of the star
+    my_x, my_y, my_vx, my_vy, x_star, y_star, vx_star, vy_star = my_rk4(x0, v_x0,y0, v_y0, star=True)
 
+    print('Das hier sind alle shapes... ', np.shape(x_star), np.shape(y_star), np.shape(vx_star), np.shape(vy_star))
+    print('Und das hier sind die arrays an sich: ', x_star, y_star, vx_star, vy_star)
+    print('####################################')
+
+    '''
+    Here we create the matrices with the initial conditions 
+    '''
 
     # if every star is divided in 5 equal radii
     a = r_star/5
     r_layer_list = np.array([a/2, 3/2*a, 5/2*a, 7/2*a, 9/2*a])
     for i in range(number_of_layers):
-        x_is_, y_is_ = particles(r_layer_list[i], x_star, y_star, vx_star, vy_star) 
+        # in every layer we have 8 particles created 
+        x_is_, y_is_ = particles(r_layer_list[i], x_star[i], y_star[i], vx_star[i], vy_star[i]) 
         for j in range(number_of_particles):
+        # iterate over these 8 particles and fill the x_is with the initial conditions 
         # for the i-th layer we create j particles
             x_is[i,j] = x_is_[j]
             y_is[i,j] = y_is_[j]
 
 
+    '''
+    Here the eom for the particles are solved with the respective initial conditions 
+    '''
 
     # here I solve the eom for the particles (for all 40)
     # create empty arrays for the particle eoms (for x and y only for now, we are only interested in the trajectory)
-    x_final = np.zeros((5,8))
-    y_final = np.zeros((5,8))
+    x_final = np.zeros((5,8,len(t)))
+    y_final = np.zeros((5,8,len(t)))
+    vx_final = np.zeros((5,8,len(t)))
+    vy_final = np.zeros((5,8,len(t)))
     
+    print(np.shape(my_x))
     for i in range(number_of_layers):
         for j in range(number_of_particles):
             # solve the eom and save the trajectories x and y in x_final and y_final
             # where x_is and y_is are the initial conditions for the [i,j]th particle
-            x_final[i,j], y_final[i,j] = my_rk4(x_is[i,j], y_is[i,j], vx_star, vy_star, star=False)
-    
-    return x_final, y_final
+            print(np.shape(x_final[i,j,:]), np.shape(y_final), np.shape(x_is), np.shape(y_is), np.shape(vx_star[i]) ,np.shape(vy_star))
+            my_x_final, my_y_final, my_vx_final, my_vy_final  = my_rk4(x_is[i,j], y_is[i,j], vx_star[i], vy_star[i], star=False)
+            print(np.shape(my_x_final))
 
-# execute()
+
+    # so now, we should have: 
+    # 40 eoms for 40 particles, all movement in x_final and y_final
+    # and 1 eom of the star. The star disappears at some point. 
+    
+    return x_star, y_star, vx_star, vy_star, x_final, y_final
+
+execute()
