@@ -7,9 +7,9 @@ from scipy import constants
 from sympy import *
 
 
+x_save, y_save, vx_save, vy_save = []
 
+# A, B, C, r = symbols('A,B,C,r')
+# a = solve(-A/r**2 -B/r**3 - C , r)
 
-A, B, C, r = symbols('A,B,C,r')
-a = solve(-A/r**2 -B/r**3 - C , r)
-
-print(a, type(a))
+# print(a, type(a))

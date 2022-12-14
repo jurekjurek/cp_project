@@ -252,12 +252,22 @@ def grav_layer(r_star, m_star, split = 5):
     r3_tot = r3+r2+r1
     r4_tot = r4+r3+r2+r1
 
+    F5 = G*m**2/(((r4_tot+r_star)/2)**2)
+    F4 = G*(4/5*m**2)/(((r3_tot+r4_tot)/2)**2)
 
-    F5 = G*m**2/(((r3_tot+r4_tot)/2)**2)
+    F3 = G*(3/5*m**2)/(((r3_tot+r2_tot)/2)**2)
+    F2 = G*(2/5*m**2)/(((r2_tot+r1_tot)/2)**2)
+    F1 = G*(1/5*m**2)/(((r1_tot+0)/2)**2)
 
-    F4 = G*(4/5*m**2)/(((r3_tot+r2_tot)/2)**2)
-    F3 = G*(3/5*m**2)/(((r2_tot+r1_tot)/2)**2)
-    F2 = G*(2/5*m**2)/(((r1_tot+0)/2)**2)
+
+    # F_test = G
+
+    # F5 = G*1/5*m*(m)/(((r4_tot+r_star)/2)**2)
+    # F4 = G*1/5*m*(4/5*m)/(((r3_tot+r4_tot)/2)**2)
+
+    # F3 = G*1/5*m*(3/5*m)/(((r3_tot+r2_tot)/2)**2)
+    # F2 = G*1/5*m*(2/5*m)/(((r2_tot+r1_tot)/2)**2)
+    # F1 = G*1/5*m*(1/5*m)/(((r1_tot+0)/2)**2)
 
     print('radii 2,3,4,5: ', r1/10000,r2/10000,r3/10000,r4/10000)
 
@@ -274,15 +284,15 @@ def grav_layer(r_star, m_star, split = 5):
     B3 = 3*(G*M/c)**2*m*1/5
     B2 = 3*(G*M/c)**2*m*1/5
 
-
+    r1_thr = np.array([complex(item) for item in r_help(A2,B2,F1, r1_tot)])[2].real
     r2_thr = np.array([complex(item) for item in r_help(A2,B2,F2, r2_tot)])[2].real
     r3_thr = np.array([complex(item) for item in r_help(A3,B3,F3, r3_tot)])[2].real
-    r4_thr = np.array([complex(item) for item in r_help(A4,B4,F4, r3_tot)])[2].real
-    r5_thr = np.array([complex(item) for item in r_help(A5,B5,F5, r3_tot)])[2].real 
+    r4_thr = np.array([complex(item) for item in r_help(A4,B4,F4, r4_tot)])[2].real
+    r5_thr = np.array([complex(item) for item in r_help(A5,B5,F5, r_star)])[2].real 
  
     # eq to solve: -A/r^2 - B/r^3 = -F_i for r
     # return F2,F3,F4,F5
-    return r2_thr, r3_thr, r4_thr, r5_thr
+    return r1_thr, r2_thr, r3_thr, r4_thr, r5_thr
 
 
 '''
@@ -290,10 +300,10 @@ Keine Konstante Density annehmen!!!!!
 So funktioniert es für den Tidal Radius, guck nachher weiter!!!!
 '''
 
-r2,r3,r4,r5 = grav_layer(r_star, m)
+r1, r2,r3,r4,r5 = grav_layer(r_star, m)
 
 # print(r2, r3, r4, r5)
-print(r2/r_tidal, r3/r_tidal, r4/r_tidal, r5/r_tidal)
+print(r1/r_tidal, r2/r_tidal, r3/r_tidal, r4/r_tidal, r5/r_tidal)
 
 
 
@@ -348,6 +358,15 @@ def my_rk4(x0, v_x0, y0, v_y0, h = 0.2):
     v_x[0] = v_x0
     y[0] = y0
     v_y[0] = v_y0
+
+    # lists to safe x,y,vx,vy for when the star crosses certain thresholds
+    a_secure = 0            # to make sure of sth, gleich erklären
+
+    x_save = []
+    y_save = [] 
+    vx_save = [] 
+    vy_save = []
+
     for i in range(0,len(t)-1):
         k1x =   (x_(    t[i], x[i], y[i], v_x[i], v_y[i]))
         k1v_x = (v_x_(  t[i], x[i], y[i], v_x[i], v_y[i]))
@@ -374,7 +393,48 @@ def my_rk4(x0, v_x0, y0, v_y0, h = 0.2):
         y[i+1]  = y[i] + (k1y+2*k2y+2*k3y+k4y)*h/6
         v_y[i+1]  = v_y[i] + (k1v_y+2*k2v_y+2*k3v_y+k4v_y)*h/6
 
-        
+        # outermost (5th) shell:
+        if np.sqrt(x[i]**2+y[i]**2) <= r_tidal*1.2 and a_secure == 0:
+            x_save.append(x[i])
+            y_save.append(y[i])
+            vx_save.append(v_x[i])
+            vy_save.append(v_y[i])
+            a_secure = 1
+
+        # 4th shell:
+        if np.sqrt(x[i]**2+y[i]**2) <= r_tidal*1.1 and a_secure == 1:
+            x_save.append(x[i])
+            y_save.append(y[i])
+            vx_save.append(v_x[i])
+            vy_save.append(v_y[i])
+            a_secure = 2
+
+        # 3rd shell:
+        if np.sqrt(x[i]**2+y[i]**2) <= r_tidal*1.0 and a_secure == 2:
+            x_save.append(x[i])
+            y_save.append(y[i])
+            vx_save.append(v_x[i])
+            vy_save.append(v_y[i])
+            a_secure = 3
+
+        # 2nd shell:
+        if np.sqrt(x[i]**2+y[i]**2) <= r_tidal*0.9 and a_secure == 3:
+            x_save.append(x[i])
+            y_save.append(y[i])
+            vx_save.append(v_x[i])
+            vy_save.append(v_y[i])
+            a_secure = 4
+
+        # innermost (1st) shell:
+        # if the innermost shell turns into particles, the star does not exist anymore as a star, so this runge kutta for-loop stops
+        if np.sqrt(x[i]**2+y[i]**2) <= r_tidal*0.8 and a_secure == 4:
+            x_save.append(x[i])
+            y_save.append(y[i])
+            vx_save.append(v_x[i])
+            vy_save.append(v_y[i])   
+            a_secure = 5 
+            break
+
         # define black hole radius to be one right now
         if np.sqrt(x[i]**2+y[i]**2) <= r_tidal:
             x[i] = 0
@@ -457,7 +517,9 @@ def main():
     x_is_5 = np.zeros(number_of_particles)
     x_is = np.array([x_is_1, x_is_2, x_is_3, x_is_4, x_is_5])
     y_is = x_is
-    r_layer_list = grav_layer(r_star, m)
+    # r_layer_list = grav_layer(r_star, m)
+    a = r_star/5
+    r_layer_list = np.array([a/2, 3/2*a, 5/2*a, 7/2*a, 9/2*a])
     print(np.shape(x_is))
     for i in range(number_of_layers):
         x_is_, y_is_ = particles(r_layer_list[i], x_star, y_star, vx_star, vy_star) 
