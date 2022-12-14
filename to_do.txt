@@ -7,3 +7,12 @@
 - if we set F_bh = F_selfgrav we get to 10*r_Tidal  --> weird
 
 - Create N particles, see how it turns out to work animation- capacity-wise
+
+
+2 do for tomorrow: 
+
+- look at star turning into only *one* particle
+- es könnte auch einfach keinen Unterschied machen, was die Bewegung eines einzelnen Teilchens im Gegensatz zu einem 
+Star angeht... Die v_x und v_y sind die selben und die x und y sind nicht sehr weit voneinander entfernt leider Gottes
+- Aber morgen für eins!! checken und dann gucken...
+- Vielleicht kann man ja noch einen Wechselwirkungsterm adden 

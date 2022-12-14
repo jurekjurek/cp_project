@@ -189,7 +189,7 @@ def my_rk4(x0, v_x0, y0, v_y0, star, h = 4):
         v_y[i+1]  = v_y[i] + (k1v_y+2*k2v_y+2*k3v_y+k4v_y)*h/6
 
         # if the star (or the particles) passes the ss_radius, it's gone and we cannot describe its motion anymore
-        if np.sqrt(x[i]**2+y[i]**2) <= r_tidal:
+        if np.sqrt(x[i]**2+y[i]**2) <= r_ss:
             x[i] = 0
             y[i] = 0
             # sets the valus after this time to zero, since it's not going to evolve anymore
@@ -211,6 +211,7 @@ def my_rk4(x0, v_x0, y0, v_y0, star, h = 4):
                 y_save[0] = (y[i])
                 vx_save[0] = (v_x[i])
                 vy_save[0] = (v_y[i])
+                print('a_secure = ', a_secure)
                 a_secure = 1
 
             # 4th shell:
@@ -219,6 +220,8 @@ def my_rk4(x0, v_x0, y0, v_y0, star, h = 4):
                 y_save[1] = (y[i])
                 vx_save[1] = (v_x[i])
                 vy_save[1] = (v_y[i])
+                
+                print('a_secure = ', a_secure)
                 a_secure = 2
 
             # 3rd shell:
@@ -227,6 +230,8 @@ def my_rk4(x0, v_x0, y0, v_y0, star, h = 4):
                 y_save[2] = (y[i])
                 vx_save[2] = (v_x[i])
                 vy_save[2] = (v_y[i])
+                
+                print('a_secure = ', a_secure)
                 a_secure = 3
 
             # 2nd shell:
@@ -235,6 +240,8 @@ def my_rk4(x0, v_x0, y0, v_y0, star, h = 4):
                 y_save[3] = (y[i])
                 vx_save[3] = (v_x[i])
                 vy_save[3] = (v_y[i])
+                
+                print('a_secure = ', a_secure)
                 a_secure = 4
 
             # innermost (1st) shell:
@@ -243,7 +250,9 @@ def my_rk4(x0, v_x0, y0, v_y0, star, h = 4):
                 x_save[4] = (x[i])
                 y_save[4] = (y[i])
                 vx_save[4] = (v_x[i])
-                vy_save[4] = (v_y[i])   
+                vy_save[4] = (v_y[i]) 
+                
+                print('a_secure = ', a_secure)  
                 a_secure = 5 
                 break
 
@@ -368,7 +377,7 @@ def execute():
         for j in range(number_of_particles):
             # solve the eom and save the trajectories x and y in x_final and y_final
             # where x_is and y_is are the initial conditions for the [i,j]th particle
-            print(np.shape(x_final[i,j,:]), np.shape(y_final), np.shape(x_is), np.shape(y_is), np.shape(vx_star[i]) ,np.shape(vy_star))
+            # print(np.shape(x_final[i,j,:]), np.shape(y_final), np.shape(x_is), np.shape(y_is), np.shape(vx_star[i]) ,np.shape(vy_star))
             x_final[i,j,:], y_final[i,j,:], vx_final[i,j,:], vy_final[i,j,:] = my_rk4(x_is[i,j], y_is[i,j], vx_star[i], vy_star[i], star=False)
             # print(np.shape(my_x_final), np.shape(my_y_final))
 
