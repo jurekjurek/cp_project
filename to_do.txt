@@ -1,0 +1,9 @@
+
+
+- create GIFs of the animations for Kepler, and Black hole potential for different velocities 
+
+- show how it orbits at the r_isco
+
+- if we set F_bh = F_selfgrav we get to 10*r_Tidal  --> weird
+
+- Create N particles, see how it turns out to work animation- capacity-wise

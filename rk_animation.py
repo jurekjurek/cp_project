@@ -17,33 +17,8 @@ M = 10**6 * m                   # mass of BH
 r_star = 696340*10**3
 
 '''
-Initial conditions
+Stuff for the black hole
 '''
-
-
-r_tidal = r_star * (M/m)**(1/3)
-
-# we're gonna use kepler = 2 potential
-# as soon as r<r_isco the orbits become unstable
-
-x0 =    0
-y0 =    r_tidal * 2#8*10**9     # close to the isco radius
-# v_x0 =  10**8
-v_y0 =  0
-
-# orbit velo
-# v_x0 = np.sqrt(G*M/y0)
-
-# orbit velo for BH
-# it actually works...
-v_x0 = np.sqrt(G*M/y0 + 3*G**2*M**2/(y0**2*c**2))
-
-# escape velo, A = G*M
-# we see that for 70% e.g. the particle falls back into the Mass
-# v_x0 = 0
-# v_y0 = np.sqrt(A*2/y0)*0.7
-
-print('vy_0 is ', v_x0/c*100, '% of the speed of light.')
 
 def L(x,y, m):
     '''
@@ -57,15 +32,11 @@ def L(x,y, m):
     r = np.sqrt((x**2+y**2))
     return r*m*v_x0
 
-L = L(x0, y0, m)
-print(L)
-
 A = G*M
-B = L**2 / m**2             # 0.005
-C = 3*G*M*L**2 / (m*c**2)   # 0.8
+# B = L**2 / m**2             # 0.005
+# C = 3*G*M*L**2 / (m*c**2)   # 0.8
 
 
-# things for the Black hole
 
 r_ss   = 2*A/c**2
 r_isco = 3*r_ss
@@ -75,6 +46,39 @@ r_photon = 1.5 * r_ss
 
 # tidal radius
 r_tidal = r_star * (M/m)**(1/3)
+
+
+
+'''
+
+Initial conditions
+
+'''
+
+r_tidal = r_star * (M/m)**(1/3)
+
+# we're gonna use kepler = 2 potential
+# as soon as r<r_isco the orbits become unstable
+
+x0 =    0
+y0 =    r_isco*1.5#8*10**9     # close to the isco radius
+v_y0 =  0
+
+# orbit velo
+# v_x0 = np.sqrt(G*M/y0)
+
+# orbit velo for BH
+# it actually works...
+v_x0 = np.sqrt(G*M/y0 + 3*G**2*M**2/(y0**2*c**2))*0.9
+
+# escape velo, A = G*M
+# we see that for 70% e.g. the particle falls back into the Mass
+# v_x0 = 0
+# v_y0 = np.sqrt(A*2/y0)*0.7
+
+print('vy_0 is ', v_x0/c*100, '% of the speed of light.')
+
+
 
 ##############################################################################################################
 #                               Kepler orbit or BH orbit? 
@@ -234,7 +238,7 @@ my_r = np.sqrt(my_x**2+ my_y**2)
 #                 # title, and axes
 #     # ax.plot_su6rface(X_Earth, Y_Earth, Z_Earth, color='green', alpha=0.7)
 #     # Updating Trajectory Line (num+1 due to Python indexing)
-#     ax.plot(dataSet[0, :(num+1)*50], dataSet[1, :(num+1)*50], c='black')
+#     ax.plot(dataSet[0, :(num+1)*100], dataSet[1, :(num+1)*100], c='black')
 #     # Updating Point Location 
 #     ax.scatter(dataSet[0, num], dataSet[1, num], 
 #                c='black', marker='o', s = 1)
@@ -291,7 +295,6 @@ plt.ylabel('Y-coordinate of the particle')
 plt.scatter(my_x[0], my_y[0], label = 'beginning')
 plt.scatter(my_x[-1], my_y[-1], label = 'end')
 plt.scatter(0,0, label= 'Black Hole', color = 'black')#, s = 300)
-plt.scatter(0,-r_isco, label = 'isco radius')
 plt.scatter(0,-r_ss, label = 'Schwarzschild radius')
 plt.scatter(0,-r_tidal, label = 'Tidal radius for star')
 # if we maybe want to do it more fancy:
@@ -301,7 +304,10 @@ plt.scatter(0,-r_tidal, label = 'Tidal radius for star')
 plt.xlim(-y0*2, y0*2)
 plt.ylim(-y0*2, y0*2)
 plt.title('Motion of the particle in the Kepler field - solved with RK4')
+
+plt.scatter(0,-r_isco, label = 'isco radius')
 plt.legend(loc = 'upper right')
+
 plt.show()
 
 # plt.figure()
