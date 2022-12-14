@@ -452,6 +452,9 @@ def my_rk4(x0, v_x0, y0, v_y0, star, h = 0.2):
                 a_secure = 5 
                 break
 
+    if len(x_save) != 5 or len(y_save) != 5 or len(vx_save) != 5 or len(vy_save) != 5:
+        print('Not every layer has turned into a star. Returning None')
+        return None 
 
     return x, y, v_x, v_y
 
@@ -509,7 +512,7 @@ def particles(r_layer, x_star, y_star, vx_star, vy_star, number_of_particles=8):
 # print(r5_layer)
 # print(x_is, y_is)
 
-def main():
+def execute():
 
     # for now:
     x_star =  x0
@@ -519,20 +522,28 @@ def main():
 
     number_of_layers = 5
     number_of_particles = 8
-    x_is_1 = np.zeros(number_of_particles)
-    x_is_2 = np.zeros(number_of_particles)
-    x_is_3 = np.zeros(number_of_particles)
-    x_is_4 = np.zeros(number_of_particles)
-    x_is_5 = np.zeros(number_of_particles)
-    x_is = np.array([x_is_1, x_is_2, x_is_3, x_is_4, x_is_5])
+    # x_is_1 = np.zeros(number_of_particles)
+    # x_is_2 = np.zeros(number_of_particles)
+    # x_is_3 = np.zeros(number_of_particles)
+    # x_is_4 = np.zeros(number_of_particles)
+    # x_is_5 = np.zeros(number_of_particles)
+    # x_is = np.array([x_is_1, x_is_2, x_is_3, x_is_4, x_is_5])
+
+    # x_is and y_is will consist of the initial conditions (x and y) for every particle
+    x_is = np.zeros((number_of_layers, number_of_particles))
     y_is = x_is
     # r_layer_list = grav_layer(r_star, m)
-    a = r_star/5
+    
 
     # we get x_star, y_star, vx_star ... from calling rk 4 for the star 
+    # but! These will also be 1-dim np.arrays with length 5 (for every layer)
+    # so: the velocity of the star when the outermost layer separated was: vx_star[0]
+    x_star, y_star, vx_star, vy_star = 
 
+
+    # if every star is divided in 5 equal radii
+    a = r_star/5
     r_layer_list = np.array([a/2, 3/2*a, 5/2*a, 7/2*a, 9/2*a])
-    print(np.shape(x_is))
     for i in range(number_of_layers):
         x_is_, y_is_ = particles(r_layer_list[i], x_star, y_star, vx_star, vy_star) 
         for j in range(number_of_particles):
@@ -542,63 +553,17 @@ def main():
 
 
 
-    # here I solve the eom for the particles (for all 40, without iterating over them which is probably not the best idea)
+    # here I solve the eom for the particles (for all 40)
+    # create empty arrays for the particle eoms (for x and y only for now, we are only interested in the trajectory)
+    x_final = np.zeros((5,8))
+    y_final = np.zeros((5,8))
+    
+    for i in range(number_of_layers):
+        for j in range(number_of_particles):
+            # solve the eom and save the trajectories x and y in x_final and y_final
+            # where x_is and y_is are the initial conditions for the [i,j]th particle
+            x_final[i,j], y_final[i,j] = my_rk4(x_is[i,j], y_is[i,j], vx_star, vy_star, star=False)
+    
+    return x_final, y_final
 
-    # first layer, first particle
-    x1_1, y1_1, vx1_1, vy1_1 = my_rk4(x_is[0,0], y_is[0,0],vx_star, vy_star,star=False)
-    # first layer, second particle
-    x1_2, y1_2, vx1_2, vy1_2 = my_rk4(x_is[0,1], y_is[0,1],vx_star, vy_star,star=False)
-    # and so on...
-    x1_3, y1_3, vx1_3, vy1_3 = my_rk4(x_is[0,2], y_is[0,2],vx_star, vy_star,star=False)
-    x1_4, y1_4, vx1_4, vy1_4 = my_rk4(x_is[0,3], y_is[0,3],vx_star, vy_star,star=False)
-    x1_5, y1_5, vx1_5, vy1_5 = my_rk4(x_is[0,4], y_is[0,4],vx_star, vy_star,star=False)
-    x1_6, y1_6, vx1_6, vy1_6 = my_rk4(x_is[0,5], y_is[0,5],vx_star, vy_star,star=False)
-    x1_7, y1_7, vx1_7, vy1_7 = my_rk4(x_is[0,6], y_is[0,6],vx_star, vy_star,star=False)
-    x1_8, y1_8, vx1_8, vy1_8 = my_rk4(x_is[0,7], y_is[0,7],vx_star, vy_star,star=False)
-
-    # second layer, first particle and so on....
-    x2_1, y2_1, vx2_1, vy2_1 = my_rk4(x_is[1,0], y_is[1,0],vx_star, vy_star,star=False)
-    x2_2, y2_2, vx2_2, vy2_2 = my_rk4(x_is[1,1], y_is[1,1],vx_star, vy_star,star=False)
-    x2_3, y2_3, vx2_3, vy2_3 = my_rk4(x_is[1,2], y_is[1,2],vx_star, vy_star,star=False)
-    x2_4, y2_4, vx2_4, vy2_4 = my_rk4(x_is[1,3], y_is[1,3],vx_star, vy_star,star=False)
-    x2_5, y2_5, vx2_5, vy2_5 = my_rk4(x_is[1,4], y_is[1,4],vx_star, vy_star,star=False)
-    x2_6, y2_6, vx2_6, vy2_6 = my_rk4(x_is[1,5], y_is[1,5],vx_star, vy_star,star=False)
-    x2_7, y2_7, vx2_7, vy2_7 = my_rk4(x_is[1,6], y_is[1,6],vx_star, vy_star,star=False)
-    x2_8, y2_8, vx2_8, vy2_8 = my_rk4(x_is[1,7], y_is[1,7],vx_star, vy_star,star=False)
-
-
-    # third layer, all particles
-    x3_1, y3_1, vx3_1, vy3_1 = my_rk4(x_is[2,0], y_is[2,0],vx_star, vy_star,star=False)
-    x3_2, y3_2, vx3_2, vy3_2 = my_rk4(x_is[2,1], y_is[2,1],vx_star, vy_star,star=False)
-    x3_3, y3_3, vx3_3, vy3_3 = my_rk4(x_is[2,2], y_is[2,2],vx_star, vy_star,star=False)
-    x3_4, y3_4, vx3_4, vy3_4 = my_rk4(x_is[2,3], y_is[2,3],vx_star, vy_star,star=False)
-    x3_5, y3_5, vx3_5, vy3_5 = my_rk4(x_is[2,4], y_is[2,4],vx_star, vy_star,star=False)
-    x3_6, y3_6, vx3_6, vy3_6 = my_rk4(x_is[2,5], y_is[2,5],vx_star, vy_star,star=False)
-    x3_7, y3_7, vx3_7, vy3_7 = my_rk4(x_is[2,6], y_is[2,6],vx_star, vy_star,star=False)
-    x3_8, y3_8, vx3_8, vy3_8 = my_rk4(x_is[2,7], y_is[2,7],vx_star, vy_star,star=False)
-
-
-    # fourth layer, all particles
-    x4_1, y4_1, vx4_1, vy4_1 = my_rk4(x_is[3,0], y_is[3,0],vx_star, vy_star,star=False)
-    x4_2, y4_2, vx4_2, vy4_2 = my_rk4(x_is[3,1], y_is[3,1],vx_star, vy_star,star=False)
-    x4_3, y4_3, vx4_3, vy4_3 = my_rk4(x_is[3,2], y_is[3,2],vx_star, vy_star,star=False)
-    x4_4, y4_4, vx4_4, vy4_4 = my_rk4(x_is[3,3], y_is[3,3],vx_star, vy_star,star=False)
-    x4_5, y4_5, vx4_5, vy4_5 = my_rk4(x_is[3,4], y_is[3,4],vx_star, vy_star,star=False)
-    x4_6, y4_6, vx4_6, vy4_6 = my_rk4(x_is[3,5], y_is[3,5],vx_star, vy_star,star=False)
-    x4_7, y4_7, vx4_7, vy4_7 = my_rk4(x_is[3,6], y_is[3,6],vx_star, vy_star,star=False)
-    x4_8, y4_8, vx4_8, vy4_8 = my_rk4(x_is[3,7], y_is[3,7],vx_star, vy_star,star=False)
-
-
-    # fifth layer, all particles
-    x5_1, y5_1, vx5_1, vy5_1 = my_rk4(x_is[4,0], y_is[4,0],vx_star, vy_star,star=False)
-    x5_2, y5_2, vx5_2, vy5_2 = my_rk4(x_is[4,1], y_is[4,1],vx_star, vy_star,star=False)
-    x5_3, y5_3, vx5_3, vy5_3 = my_rk4(x_is[4,2], y_is[4,2],vx_star, vy_star,star=False)
-    x5_4, y5_4, vx5_4, vy5_4 = my_rk4(x_is[4,3], y_is[4,3],vx_star, vy_star,star=False)
-    x5_5, y5_5, vx5_5, vy5_5 = my_rk4(x_is[4,4], y_is[4,4],vx_star, vy_star,star=False)
-    x5_6, y5_6, vx5_6, vy5_6 = my_rk4(x_is[4,5], y_is[4,5],vx_star, vy_star,star=False)
-    x5_7, y5_7, vx5_7, vy5_7 = my_rk4(x_is[4,6], y_is[4,6],vx_star, vy_star,star=False)
-    x5_8, y5_8, vx5_8, vy5_8 = my_rk4(x_is[4,7], y_is[4,7],vx_star, vy_star,star=False)
-
-    return x_is, y_is
-
-# main()
+# execute()
