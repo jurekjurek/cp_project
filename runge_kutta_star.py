@@ -24,8 +24,12 @@ Initial conditions
 # tidal radius
 r_tidal = r_star * (M/m)**(1/3)
 
-x0 =    0
-y0 =    1.2*r_tidal #8*10**9     # close to the isco radius
+# x0 =    0
+# y0 =    1.2*r_tidal #8*10**9     # close to the isco radius
+
+x0 =    -r_tidal*1
+y0 =    r_tidal*1.5
+
 # v_x0 =  10**8
 v_y0 =  0
 
@@ -43,23 +47,23 @@ v_x0 = np.sqrt(G*M/y0 + 3*G**2*M**2/(y0**2*c**2))
 
 print('vy_0 is ', v_x0/c*100, '% of the speed of light.')
 
-def L(x,y, m):
-    '''
-    function that calculates the angular momentum for given x, y
-    L is constant over time
-    Since at point t = 0, we have only a velocity component in x-direction, so we calculate the L(0) = L(t) to be:
-    '''
-    x = float(x)
-    y = float(y)
-    r = np.sqrt((x**2+y**2))
-    return r*m*v_x0
+# def L(x,y, m):
+#     '''
+#     function that calculates the angular momentum for given x, y
+#     L is constant over time
+#     Since at point t = 0, we have only a velocity component in x-direction, so we calculate the L(0) = L(t) to be:
+#     '''
+#     x = float(x)
+#     y = float(y)
+#     r = np.sqrt((x**2+y**2))
+#     return r*m*v_x0
 
-L = L(x0, y0, m)
+# L = L(x0, y0, m)
 
 
 A = G*M
-B = L**2 / m**2             # 0.005
-C = 3*G*M*L**2 / (m*c**2)   # 0.8
+# B = L**2 / m**2             # 0.005
+# C = 3*G*M*L**2 / (m*c**2)   # 0.8
 
 
 # things for the Black hole
@@ -88,8 +92,8 @@ kepler = 2
 # escape velocity for newtonian potential
 # v0 = np.sqrt(2/r0) 
 
-t = np.linspace(0,100000,10000)
-
+# t = np.linspace(0,100000,10000)
+t = np.linspace(0,1000000000,20000)
 t0 = t[0]
 
 h = len(t)
@@ -126,8 +130,9 @@ def y_(t,x,y,v_x,v_y):
 
 
 
-
-def my_rk4(x0, v_x0, y0, v_y0, star, h = 0.2):
+# the higher h, the more happens / the less detailed
+# which makes sense
+def my_rk4(x0, v_x0, y0, v_y0, star, h = 4):
     '''
     This function solves the differential equations (the equation of motion)
     for the x- and y-component of a particle. At each step, we evaluate v[i] for x and y which corresponds to their derivatives 
@@ -202,43 +207,43 @@ def my_rk4(x0, v_x0, y0, v_y0, star, h = 0.2):
             # (a_secure makes sure that we only divide each layer into particles once and makes sure we can only split the i-1 th layer if we already split up the ith layer)
             # outermost (5th) shell:
             if np.sqrt(x[i]**2+y[i]**2) <= r_tidal*1.02 and a_secure == 0:
-                x_save[i] = (x[i])
-                y_save[i] = (y[i])
-                vx_save[i] = (v_x[i])
-                vy_save[i] = (v_y[i])
+                x_save[0] = (x[i])
+                y_save[0] = (y[i])
+                vx_save[0] = (v_x[i])
+                vy_save[0] = (v_y[i])
                 a_secure = 1
 
             # 4th shell:
             if np.sqrt(x[i]**2+y[i]**2) <= r_tidal*1.01 and a_secure == 1:
-                x_save[i] = (x[i])
-                y_save[i] = (y[i])
-                vx_save[i] = (v_x[i])
-                vy_save[i] = (v_y[i])
+                x_save[1] = (x[i])
+                y_save[1] = (y[i])
+                vx_save[1] = (v_x[i])
+                vy_save[1] = (v_y[i])
                 a_secure = 2
 
             # 3rd shell:
             if np.sqrt(x[i]**2+y[i]**2) <= r_tidal*1.00 and a_secure == 2:
-                x_save[i] = (x[i])
-                y_save[i] = (y[i])
-                vx_save[i] = (v_x[i])
-                vy_save[i] = (v_y[i])
+                x_save[2] = (x[i])
+                y_save[2] = (y[i])
+                vx_save[2] = (v_x[i])
+                vy_save[2] = (v_y[i])
                 a_secure = 3
 
             # 2nd shell:
             if np.sqrt(x[i]**2+y[i]**2) <= r_tidal*0.99 and a_secure == 3:
-                x_save[i] = (x[i])
-                y_save[i] = (y[i])
-                vx_save[i] = (v_x[i])
-                vy_save[i] = (v_y[i])
+                x_save[3] = (x[i])
+                y_save[3] = (y[i])
+                vx_save[3] = (v_x[i])
+                vy_save[3] = (v_y[i])
                 a_secure = 4
 
             # innermost (1st) shell:
             # if the innermost shell turns into particles, the star does not exist anymore as a star, so this runge kutta for-loop stops
             if np.sqrt(x[i]**2+y[i]**2) <= r_tidal*0.98 and a_secure == 4:
-                x_save[i] = (x[i])
-                y_save[i] = (y[i])
-                vx_save[i] = (v_x[i])
-                vy_save[i] = (v_y[i])   
+                x_save[4] = (x[i])
+                y_save[4] = (y[i])
+                vx_save[4] = (v_x[i])
+                vy_save[4] = (v_y[i])   
                 a_secure = 5 
                 break
 
@@ -376,3 +381,31 @@ def execute():
 
 x, y, vx, vy, x_p, y_p, vx_p, vy_p = execute()
 print(np.shape(x), np.shape(y), np.shape(vx), np.shape(vy), np.shape(x_p), np.shape(y_p), np.shape(vx_p), np.shape(vy_p))
+
+
+
+fig, ax = plt.subplots()
+
+# plt.plot(x,y)
+plt.plot(x_p[1,0], y_p[1,0])
+xla = plt.xlabel('X-coordinate of the particle')
+yla = plt.ylabel('Y-coordinate of the particle')
+beg = plt.scatter(x[0], y[0], label = 'beginning')
+end = plt.scatter(x[-1], y[-1], label = 'end')          # last element of x and y
+bh = plt.scatter(0,0, label= 'Black Hole', color = 'black')#, s = 300)
+ss = plt.scatter(0,-r_ss, label = 'Schwarzschild radius')
+isco = plt.scatter(0,-r_isco, label = 'isco radius')
+# tidal = plt.scatter(0,-r_tidal, label = 'Tidal radius for star')
+# if we maybe want to do it more fancy:
+#
+circle = plt.Circle((0,0), r_tidal, color = 'red', fill = False, lw = 2, label = 'Tidal radius')
+
+ax.add_patch(circle)
+
+plt.xlim(-y0*2, y0*2)
+plt.ylim(-y0*2, y0*2)
+plt.title('Motion of the particle in the Kepler field - solved with RK4')
+
+plt.legend(loc = 'upper right')
+
+plt.show()
