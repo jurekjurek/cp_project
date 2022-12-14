@@ -53,3 +53,25 @@
 
 #     return r2_thr-r2, r3_thr-r3, r4_thr-r4, r5_thr-r5
 
+
+
+
+
+# def test():
+#     '''
+#     function that calculates, when the F_BH on the i-th layer of the star is bigger than the gravitational pull of the star itself
+#     '''
+#     r = np.sqrt(x**2+y**2)
+#     F_bh = -A / r**2 - 3*(G*M/c)**2 / r**3
+#     F2, F3, F4, F5 = grav_layer(r_star, m)
+#     for i in range(len(t)):
+#         if F_bh <= F2:
+#             print('Distance for first layer to drop: ', r)
+#         if F_bh <= F3:
+#             print('Distance for second layer to drop: ', r)
+#         if F_bh <= F4:
+#             print('Distance for third layer to drop: ', r)
+#         if F_bh <= F5:
+#             print('Distance for fourth layer to drop: ', r)
+
+# test()

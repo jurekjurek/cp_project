@@ -149,6 +149,75 @@ def r_help_bh(D):
 # for F5, we assume the outer layer is bound by the whole self grav, the i-1th layer bound by 4/5*m**2 and so on 
 # we get 4*the tidal radius... which is still not good 
 
+# def grav_layer(r_star, m_star, split = 5):
+#     '''
+#     Calculate the different radii for the different layers
+#     assuming constant density
+#     '''
+#     m = m_star 
+#     # r1 = r_star / (split**(1/3)) 
+#     # r1 = r1
+#     # r2 = (2**(1/3)-1)*r1
+#     # r3 = (3**(1/3)-2**(1/3))*r1
+#     # r4 = (4**(1/3)-3**(1/3))*r1
+#     # r5 = r_star
+
+#     r1 = r_star / (split**(1/3)) 
+#     r1 = r1
+#     r2 = (2**(1/3)-1)*r1 #+ r1
+#     r3 = (3**(1/3)-2**(1/3))*r1 #+ r1 + r2 
+#     r4 = (4**(1/3)-3**(1/3))*r1 #+ r1 + r2 +r3
+#     r5 = (5**(1/3)-4**(1/3))*r1 #+ r1 + r2 +r3 + r4  # this is the rad of the star
+    
+    
+#     print('should reproduce whole star radius...: ', (r1+r2+r3+r4+r5)/100000, r_star/100000)
+    
+#     r1_tot = r1
+#     r2_tot = r2 + r1
+#     r3_tot = r3+r2+r1
+#     r4_tot = r4+r3+r2+r1
+
+
+#     F5 = G*m**2/(((r3_tot+r4_tot)/2)**2)
+
+#     F4 = G*(4/5*m**2)/(((r3_tot+r2_tot)/2)**2)
+#     F3 = G*(3/5*m**2)/(((r2_tot+r1_tot)/2)**2)
+#     F2 = G*(2/5*m**2)/(((r1_tot+0)/2)**2)
+
+#     print('radii 2,3,4,5: ', r1/10000,r2/10000,r3/10000,r4/10000)
+
+#     print('Forces ascending: ',F2, F3, F4, F5)
+
+
+#     A5 = G*M*m*1/5
+#     A4 = G*M*m*1/5
+#     A3 = G*M*m*1/5
+#     A2 = G*M*m*1/5
+
+#     B5 = 3*(G*M/c)**2*m*1/5
+#     B4 = 3*(G*M/c)**2*m*1/5
+#     B3 = 3*(G*M/c)**2*m*1/5
+#     B2 = 3*(G*M/c)**2*m*1/5
+
+
+#     r2_thr = np.array([complex(item) for item in r_help(A2,B2,F2, r2_tot)])[2].real
+#     r3_thr = np.array([complex(item) for item in r_help(A3,B3,F3, r3_tot)])[2].real
+#     r4_thr = np.array([complex(item) for item in r_help(A4,B4,F4, r3_tot)])[2].real
+#     r5_thr = np.array([complex(item) for item in r_help(A5,B5,F5, r3_tot)])[2].real 
+ 
+#     # eq to solve: -A/r^2 - B/r^3 = -F_i for r
+#     # return F2,F3,F4,F5
+#     r1_ = r1_tot/2
+#     r2_ = (r1_tot+r2_tot)/2
+#     r3_ = (r2_tot+r3_tot)/2
+#     r4_ = (r3_tot+r4_tot)/2
+#     r5_ = (r4_tot+r_star)/2
+#     return np.array([r1_, r2_, r3_, r4_, r5_])
+#     return r2_thr, r3_thr, r4_thr, r5_thr
+
+
+
+
 def grav_layer(r_star, m_star, split = 5):
     '''
     Calculate the different radii for the different layers
@@ -162,12 +231,18 @@ def grav_layer(r_star, m_star, split = 5):
     # r4 = (4**(1/3)-3**(1/3))*r1
     # r5 = r_star
 
-    r1 = r_star / (split**(1/3)) 
-    r1 = r1
-    r2 = (2**(1/3)-1)*r1 #+ r1
-    r3 = (3**(1/3)-2**(1/3))*r1 #+ r1 + r2 
-    r4 = (4**(1/3)-3**(1/3))*r1 #+ r1 + r2 +r3
-    r5 = (5**(1/3)-4**(1/3))*r1 #+ r1 + r2 +r3 + r4  # this is the rad of the star
+    # r1 = r_star / (split**(1/3)) 
+    # r1 = r1
+    # r2 = (2**(1/3)-1)*r1 #+ r1
+    # r3 = (3**(1/3)-2**(1/3))*r1 #+ r1 + r2 
+    # r4 = (4**(1/3)-3**(1/3))*r1 #+ r1 + r2 +r3
+    # r5 = (5**(1/3)-4**(1/3))*r1 #+ r1 + r2 +r3 + r4  # this is the rad of the star
+    
+    r1 = r_star / 5
+    r2 = r_star / 5 
+    r3 = r_star / 5 
+    r4 = r_star / 5 
+    r5 = r_star / 5 
     
     
     print('should reproduce whole star radius...: ', (r1+r2+r3+r4+r5)/100000, r_star/100000)
@@ -210,10 +285,14 @@ def grav_layer(r_star, m_star, split = 5):
     return r2_thr, r3_thr, r4_thr, r5_thr
 
 
+'''
+Keine Konstante Density annehmen!!!!! 
+So funktioniert es für den Tidal Radius, guck nachher weiter!!!!
+'''
 
-r2, r3, r4, r5 = grav_layer(r_star, m)
+r2,r3,r4,r5 = grav_layer(r_star, m)
 
-print(r2, r3, r4, r5)
+# print(r2, r3, r4, r5)
 print(r2/r_tidal, r3/r_tidal, r4/r_tidal, r5/r_tidal)
 
 
@@ -308,28 +387,85 @@ def my_rk4(x0, v_x0, y0, v_y0, h = 0.2):
     return x, y, v_x, v_y
 
 
-# def test():
-#     '''
-#     function that calculates, when the F_BH on the i-th layer of the star is bigger than the gravitational pull of the star itself
-#     '''
-#     r = np.sqrt(x**2+y**2)
-#     F_bh = -A / r**2 - 3*(G*M/c)**2 / r**3
-#     F2, F3, F4, F5 = grav_layer(r_star, m)
-#     for i in range(len(t)):
-#         if F_bh <= F2:
-#             print('Distance for first layer to drop: ', r)
-#         if F_bh <= F3:
-#             print('Distance for second layer to drop: ', r)
-#         if F_bh <= F4:
-#             print('Distance for third layer to drop: ', r)
-#         if F_bh <= F5:
-#             print('Distance for fourth layer to drop: ', r)
-
-# test()
 
 
-    
+# creates 8 particles for each layer in the star 
+
+def particles(r_layer, x_star, y_star, vx_star, vy_star, number_of_particles=8):
+    '''
+    All particles have the same velocity but different initial positions
+    '''
+    vx0 = vx_star
+    vy0 = vy_star
 
 
+    x_is = np.zeros(number_of_particles)
+    y_is = np.zeros(number_of_particles)
 
+    # for every one of the 9 particles in the j-th shell define the initial positions
+    x_is[0] = 0
+    y_is[0] = 1
 
+    x_is[1] = 1/(np.sqrt(2))
+    y_is[1] = 1/(np.sqrt(2))
+
+    x_is[2] = 1
+    y_is[2] = 0
+
+    x_is[3] = 1/(np.sqrt(2))
+    y_is[4] = -1/(np.sqrt(2))
+
+    x_is[4] = 0
+    y_is[4] = -1
+
+    x_is[5] = -1/(np.sqrt(2))
+    y_is[5] = -1/(np.sqrt(2))
+
+    x_is[6] = -1
+    y_is[6] = 0
+
+    x_is[7] = -1/(np.sqrt(2))
+    y_is[7] = 1/(np.sqrt(2))
+
+    x_is = x_is * r_layer
+    y_is = y_is * r_layer
+
+    for i in range(number_of_particles):
+        x_is[i] = x_star + x_is[i]
+        y_is[i] = y_star + y_is[i]    
+
+    return x_is, y_is
+
+# x_is, y_is = particles(r5_layer, x0, y0, v_x0, v_y0) 
+# print(r5_layer)
+# print(x_is, y_is)
+
+def main():
+
+    # for now:
+    x_star =  x0
+    y_star =  y0 
+    vx_star = v_x0
+    vy_star = v_y0
+
+    number_of_layers = 5
+    number_of_particles = 8
+    x_is_1 = np.zeros(number_of_particles)
+    x_is_2 = np.zeros(number_of_particles)
+    x_is_3 = np.zeros(number_of_particles)
+    x_is_4 = np.zeros(number_of_particles)
+    x_is_5 = np.zeros(number_of_particles)
+    x_is = np.array([x_is_1, x_is_2, x_is_3, x_is_4, x_is_5])
+    y_is = x_is
+    r_layer_list = grav_layer(r_star, m)
+    print(np.shape(x_is))
+    for i in range(number_of_layers):
+        x_is_, y_is_ = particles(r_layer_list[i], x_star, y_star, vx_star, vy_star) 
+        for j in range(number_of_particles):
+        # for the i-th layer we create j particles
+            x_is[i,j] = x_is_[j]
+            y_is[i,j] = y_is_[j]
+
+    return x_is, y_is
+
+# main()
