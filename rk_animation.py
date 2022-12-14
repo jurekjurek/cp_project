@@ -60,8 +60,8 @@ r_tidal = r_star * (M/m)**(1/3)
 # we're gonna use kepler = 2 potential
 # as soon as r<r_isco the orbits become unstable
 
-x0 =    0
-y0 =    r_isco*1.5#8*10**9     # close to the isco radius
+x0 =    -r_tidal*1
+y0 =    r_tidal*1.5#8*10**9     # close to the isco radius
 v_y0 =  0
 
 # orbit velo
@@ -69,7 +69,7 @@ v_y0 =  0
 
 # orbit velo for BH
 # it actually works...
-v_x0 = np.sqrt(G*M/y0 + 3*G**2*M**2/(y0**2*c**2))*0.9
+v_x0 = np.sqrt(G*M/y0 + 3*G**2*M**2/(y0**2*c**2))
 
 # escape velo, A = G*M
 # we see that for 70% e.g. the particle falls back into the Mass
@@ -204,7 +204,7 @@ def my_rk4(h = 0.2):
 
 
         # define black hole radius to be one right now
-        if np.sqrt(x[i]**2+y[i]**2) <= 10**(-17):
+        if np.sqrt(x[i]**2+y[i]**2) <= r_tidal:#10**(-17):
             x[i] = 0
             y[i] = 0
             x = x[:i]
@@ -287,28 +287,59 @@ my_r = np.sqrt(my_x**2+ my_y**2)
 #               Simple 2d-plot of trajectory
 ###################################################################################################################################################
 
-plt.figure()
-plt.plot(my_x, my_y)
+# plt.figure()
+# plt.plot(my_x, my_y)
 
-plt.xlabel('X-coordinate of the particle')
-plt.ylabel('Y-coordinate of the particle')
-plt.scatter(my_x[0], my_y[0], label = 'beginning')
-plt.scatter(my_x[-1], my_y[-1], label = 'end')
-plt.scatter(0,0, label= 'Black Hole', color = 'black')#, s = 300)
-plt.scatter(0,-r_ss, label = 'Schwarzschild radius')
-plt.scatter(0,-r_tidal, label = 'Tidal radius for star')
+# plt.xlabel('X-coordinate of the particle')
+# plt.ylabel('Y-coordinate of the particle')
+# plt.scatter(my_x[0], my_y[0], label = 'beginning')
+# plt.scatter(my_x[-1], my_y[-1], label = 'end')
+# plt.scatter(0,0, label= 'Black Hole', color = 'black')#, s = 300)
+# plt.scatter(0,-r_ss, label = 'Schwarzschild radius')
+# plt.scatter(0,-r_tidal, label = 'Tidal radius for star')
+# # if we maybe want to do it more fancy:
+# #
+# # plt.Circle((0,r_tidal), r_tidal, color = 'red', fill = False, lw = 2)
+
+# plt.xlim(-y0*2, y0*2)
+# plt.ylim(-y0*2, y0*2)
+# plt.title('Motion of the particle in the Kepler field - solved with RK4')
+
+# plt.scatter(0,-r_isco, label = 'isco radius')
+# plt.legend(loc = 'upper right')
+
+# plt.show()
+
+
+# plt.figure()
+
+fig, ax = plt.subplots()
+
+plt.plot(my_x, my_y)
+xla = plt.xlabel('X-coordinate of the particle')
+yla = plt.ylabel('Y-coordinate of the particle')
+beg = plt.scatter(my_x[0], my_y[0], label = 'beginning')
+end = plt.scatter(my_x[-1], my_y[-1], label = 'end')
+bh = plt.scatter(0,0, label= 'Black Hole', color = 'black')#, s = 300)
+ss = plt.scatter(0,-r_ss, label = 'Schwarzschild radius')
+isco = plt.scatter(0,-r_isco, label = 'isco radius')
+# tidal = plt.scatter(0,-r_tidal, label = 'Tidal radius for star')
 # if we maybe want to do it more fancy:
 #
-# plt.Circle((0,0), 10, color = 'black', fill = False, lw = 2)
+circle = plt.Circle((0,0), r_tidal, color = 'red', fill = False, lw = 2, label = 'Tidal radius')
+
+ax.add_patch(circle)
 
 plt.xlim(-y0*2, y0*2)
 plt.ylim(-y0*2, y0*2)
 plt.title('Motion of the particle in the Kepler field - solved with RK4')
 
-plt.scatter(0,-r_isco, label = 'isco radius')
 plt.legend(loc = 'upper right')
 
 plt.show()
+
+
+
 
 # plt.figure()
 # plt.plot(t[:len(my_x)], my_r)
