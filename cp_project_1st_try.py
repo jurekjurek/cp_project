@@ -78,7 +78,7 @@ def animate_func(num):
     ax.scatter(dataSet[0, num], dataSet[1, num], dataSet[2, num], 
                c='black', marker='o', s = 1)
 
-    # Setting Axes Limits
+    # Setting Axes Limits  
     ax.set_xlim3d([-10000, 10000])
     ax.set_ylim3d([-10000, 10000])
     ax.set_zlim3d([-10000, 10000])

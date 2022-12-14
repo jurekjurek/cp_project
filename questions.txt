@@ -29,6 +29,10 @@ we only consider radial velocities, so we start as soon as the star is
 if we want to see the differences more clearly in the plot we have to just consider bigger delta x, so that
 die entfernung vom BH relativ zur distance kleiner wird
 
+- things to do: 
+
+
+
 
 
 
