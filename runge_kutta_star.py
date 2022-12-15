@@ -38,8 +38,8 @@ v_y0 =  0
 
 # orbit velo for BH
 # it actually works...
-v_x0 = np.sqrt(G*M/y0 + 3*G**2*M**2/(y0**2*c**2))*0.7
-
+v_x0 = np.sqrt(G*M/y0 + 3*G**2*M**2/(y0**2*c**2))*0.5
+v_y0 = v_x0 *0.4
 # escape velo, A = G*M
 # we see that for 70% e.g. the particle falls back into the Mass
 # v_x0 = 0
@@ -47,23 +47,23 @@ v_x0 = np.sqrt(G*M/y0 + 3*G**2*M**2/(y0**2*c**2))*0.7
 
 print('vy_0 is ', v_x0/c*100, '% of the speed of light.')
 
-# def L(x,y, m):
-#     '''
-#     function that calculates the angular momentum for given x, y
-#     L is constant over time
-#     Since at point t = 0, we have only a velocity component in x-direction, so we calculate the L(0) = L(t) to be:
-#     '''
-#     x = float(x)
-#     y = float(y)
-#     r = np.sqrt((x**2+y**2))
-#     return r*m*v_x0
+def L(x,y, m):
+    '''
+    function that calculates the angular momentum for given x, y
+    L is constant over time
+    Since at point t = 0, we have only a velocity component in x-direction, so we calculate the L(0) = L(t) to be:
+    '''
+    x = float(x)
+    y = float(y)
+    r = np.sqrt((x**2+y**2))
+    return r*m*v_x0
 
-# L = L(x0, y0, m)
+L = L(x0, y0, m)
 
 
 A = G*M
-# B = L**2 / m**2             # 0.005
-# C = 3*G*M*L**2 / (m*c**2)   # 0.8
+B = L**2 / m**2             # 0.005
+C = 3*G*M*L**2 / (m**2*c**2)   # 0.8
 
 
 # things for the Black hole
@@ -79,7 +79,7 @@ r_tidal = r_star * (M/m)**(1/3)
 
 ##############################################################################################################
 #                               Kepler orbit or BH orbit? 
-kepler = 2              
+kepler = False              
 # set to True for Newtonian potential, False for BH potential, which does not seem to work at all
 # and to 2 for the alternative potential from the paper
 ##############################################################################################################
@@ -109,7 +109,7 @@ def v_x_(t,x,y,v_x,v_y):
     elif kepler == 2:
         return -A*x / r**3 - 3*(G*M/c)**2*x / r**4
     else:
-        return -A*x / r**3 + B*x / r**4 - C*x / r**5
+        return -A*x / r**3 - C*x / r**5#+ B*x / r**4 - C*x / r**5
 
 def v_y_(t,x,y,v_x,v_y):
     r = np.sqrt((x**2+y**2))
@@ -118,7 +118,7 @@ def v_y_(t,x,y,v_x,v_y):
     elif kepler == 2:
         return -A*y / r**3 - 3*(G*M/c)**2*y / r**4
     else: 
-        return -A*y / r**3 + B*y / r**4 - C*y / r**5
+        return -A*y / r**3 - C*y / r**5#+ B*y / r**4 - C*y / r**5
 
 # this acts as v = dot(x) and v = dot(y)
 def x_(t,x,y,v_x,v_y):

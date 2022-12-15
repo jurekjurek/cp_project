@@ -125,7 +125,7 @@ data_layer4 = np.hstack((data_star, data_layer4))
 data_layer5 = np.hstack((data_star, data_layer5))
 
 def animate_func(num):
-    if num >= 20:
+    if num >= 100:
         line_ani.event_source.stop()
         return None
     ax.clear()  # Clears the figure to update the line, point,   
@@ -191,13 +191,13 @@ line_ani = animation.FuncAnimation(fig, animate_func, interval=1,
                                    frames=numDataPoints)
 
 
-line_ani.save('particles_anim.gif', fps=10)
+# line_ani.save('particles_anim.gif', fps=10)
 
 # f = r"particles_animation.gif" 
 # writergif = animation.PillowWriter(fps=30) 
 # line_ani.save(f, writer='imagemagick', fps = 30)
 
 
-# plt.show()
+plt.show()
 
 
