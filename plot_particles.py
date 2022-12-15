@@ -117,20 +117,26 @@ data_layer4 = np.array([x_p[3,0], y_p[3,0]])
 data_layer5 = np.array([x_p[4,0], y_p[4,0]])
 numDataPoints = int(len(t)*100)
 
+# time_offset = np.zeros(len(data_star))
+data_layer1 = np.hstack((data_star, data_layer1))
+data_layer2 = np.hstack((data_star, data_layer2))
+data_layer3 = np.hstack((data_star, data_layer3))
+data_layer4 = np.hstack((data_star, data_layer4))
+data_layer5 = np.hstack((data_star, data_layer5))
 
 def animate_func(num):
-    # if np.sqrt(dataSet[0,num+1]**2+ dataSet[1,num+1]**2) <= r_Earth:
-    #     line_ani.event_source.stop()
-    #     return None
+    if num >= 20:
+        line_ani.event_source.stop()
+        return None
     ax.clear()  # Clears the figure to update the line, point,   
                 # title, and axes
     # Updating Trajectory Line (num+1 due to Python indexing)
 
     # Animating the star movement:
     # if np.sqrt(x[num]**2+y[num]**2) <= r_tidal:
-    ax.plot(data_star[0, :(num+1)*100], data_star[1, :(num+1)*100], label = 'star', c='black')
-    # Updating Point Location 
-    ax.scatter(data_star[0, num], data_star[1, num],  c='black', marker='o', s = 1)
+    # ax.plot(data_star[0, :(num+1)*100], data_star[1, :(num+1)*100], label = 'star', c='black')
+    # # Updating Point Location 
+    # ax.scatter(data_star[0, num], data_star[1, num],  c='black', marker='o', s = 1)
 
     if True: 
         ax.plot(data_layer1[0, :(num+1)*100], data_layer1[1, :(num+1)*100], label = 'outermost')#, c='black')
@@ -185,8 +191,13 @@ line_ani = animation.FuncAnimation(fig, animate_func, interval=1,
                                    frames=numDataPoints)
 
 
+line_ani.save('particles_anim.gif', fps=10)
+
+# f = r"particles_animation.gif" 
+# writergif = animation.PillowWriter(fps=30) 
+# line_ani.save(f, writer='imagemagick', fps = 30)
 
 
-plt.show()
+# plt.show()
 
 
