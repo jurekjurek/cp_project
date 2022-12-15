@@ -212,6 +212,7 @@ def my_rk4(x0, v_x0, y0, v_y0, star, h = 4):
                 vx_save[0] = (v_x[i])
                 vy_save[0] = (v_y[i])
                 print('a_secure = ', a_secure)
+                print(x[i], y[i])
                 a_secure = 1
 
             # 4th shell:
@@ -222,6 +223,7 @@ def my_rk4(x0, v_x0, y0, v_y0, star, h = 4):
                 vy_save[1] = (v_y[i])
                 
                 print('a_secure = ', a_secure)
+                print(x[i], y[i])
                 a_secure = 2
 
             # 3rd shell:
@@ -232,6 +234,7 @@ def my_rk4(x0, v_x0, y0, v_y0, star, h = 4):
                 vy_save[2] = (v_y[i])
                 
                 print('a_secure = ', a_secure)
+                print(x[i], y[i])
                 a_secure = 3
 
             # 2nd shell:
@@ -242,6 +245,7 @@ def my_rk4(x0, v_x0, y0, v_y0, star, h = 4):
                 vy_save[3] = (v_y[i])
                 
                 print('a_secure = ', a_secure)
+                print(x[i], y[i])
                 a_secure = 4
 
             # innermost (1st) shell:
@@ -253,6 +257,7 @@ def my_rk4(x0, v_x0, y0, v_y0, star, h = 4):
                 vy_save[4] = (v_y[i]) 
                 
                 print('a_secure = ', a_secure)  
+                print(x[i], y[i])
                 a_secure = 5 
                 break
 
@@ -316,6 +321,14 @@ def particles(r_layer, x_star, y_star, number_of_particles=8):
 
 
 
+# print('######### test particle function #########')
+# x = [10,10,10,10,10]
+# x_is, y_is = particles(1, 10, 10)
+# print(x_is, y_is)
+
+# print('######### test particle function #########')
+
+
 def execute():
 
     # for now:
@@ -335,6 +348,8 @@ def execute():
     # my_x, ... describes the actual movement of the star
     my_x, my_y, my_vx, my_vy, x_star, y_star, vx_star, vy_star = my_rk4(x0, v_x0,y0, v_y0, star=True)
 
+    # Wir bekommen die richtigen x_save und y_save von rk4 wieder! 
+
     print('Das hier sind alle shapes... ', np.shape(x_star), np.shape(y_star), np.shape(vx_star), np.shape(vy_star))
     print('Und das hier sind die arrays an sich: ', x_star, y_star, vx_star, vy_star)
     print('####################################')
@@ -348,18 +363,30 @@ def execute():
 
     # if every star is divided in 5 equal radii, r_layer_list contains the radius for every shell, r[0] for 1st shell, r[1] for 2nd and so on...
     a = r_star/5
-    r_layer_list = np.array([a/2, 3/2*a, 5/2*a, 7/2*a, 9/2*a])
+    # r_layer_list = np.array([a/2, 3/2*a, 5/2*a, 7/2*a, 9/2*a])
+    # first element in every array considered corresponds to outermost layer
+    r_layer_list = np.array([9/2*a, 7/2*a, 5/2*a, 3/2*a, a/2])
     for i in range(number_of_layers):
         # in every layer we have 8 particles created 
         # the positions where the particles are created are dependent on the radius of the shell and 
         # the position of the star at the point where the shell splits up
         x_is_, y_is_ = particles(r_layer_list[i], x_star[i], y_star[i])         # initial positions for particles in i-th layer 
-        for j in range(number_of_particles):
-        # iterate over these 8 particles and fill the x_is with the initial conditions 
-        # for the i-th layer we create j particles
-            x_is[i,j] = x_is_[j]
-            y_is[i,j] = y_is_[j]
-
+        
+        x_is[i,:] = x_is_
+        y_is[i,:] = y_is_
+        # for j in range(number_of_particles):
+        # # iterate over these 8 particles and fill the x_is with the initial conditions 
+        # # for the i-th layer we create j particles
+        #     x_is[i,j] = x_is_[j]
+        #     y_is[i,j] = y_is_[j]
+            
+    print('#########')
+    print(x_star)
+    print('#########')
+    print(r_layer_list[0], x_star[0], y_star[0], r_star*(9/10))
+    print('#########')
+    print(x_is)
+    print('#########')
 
     '''
     Eom for the particles are solved with the respective initial conditions 
@@ -373,30 +400,34 @@ def execute():
     vy_final = np.zeros((5,8,len(t)))
     
     print(np.shape(my_x))
-    for i in range(number_of_layers):
-        for j in range(number_of_particles):
-            # solve the eom and save the trajectories x and y in x_final and y_final
-            # where x_is and y_is are the initial conditions for the [i,j]th particle
-            # print(np.shape(x_final[i,j,:]), np.shape(y_final), np.shape(x_is), np.shape(y_is), np.shape(vx_star[i]) ,np.shape(vy_star))
-            x_final[i,j,:], y_final[i,j,:], vx_final[i,j,:], vy_final[i,j,:] = my_rk4(x_is[i,j], y_is[i,j], vx_star[i], vy_star[i], star=False)
-            # print(np.shape(my_x_final), np.shape(my_y_final))
+    # for i in range(number_of_layers):
+    #     for j in range(number_of_particles):
+    #         # solve the eom and save the trajectories x and y in x_final and y_final where x_is and y_is are the initial conditions for the [i,j]th particle
+    #         x_final[i,j,:], y_final[i,j,:], vx_final[i,j,:], vy_final[i,j,:] = my_rk4(x_is[i,j], y_is[i,j], vx_star[i], vy_star[i], star=False)
+            
+    # for only one, test it: (0,0)th
+    print(x_is[0,0], y_is[0,0], x_star[0], y_star[0], vy_star[0], vx_star[0])
+    x_test, y_test, vx_test, vy_test = my_rk4(x_is[0,0], y_is[0,0], vx_star[0], vy_star[0], star=False)
 
 
     # so now, we should have: 
     # 40 eoms for 40 particles, all movement in x_final and y_final
     # and 1 eom of the star. The star disappears at some point. 
     
-    return my_x, my_y, my_vx, my_vy, x_final, y_final, vx_final, vy_final
+    # return my_x, my_y, my_vx, my_vy, x_final, y_final, vx_final, vy_final
+    return my_x, my_y, my_vx, my_vy, x_test, y_test, vx_test, vy_test
 
 x, y, vx, vy, x_p, y_p, vx_p, vy_p = execute()
 print(np.shape(x), np.shape(y), np.shape(vx), np.shape(vy), np.shape(x_p), np.shape(y_p), np.shape(vx_p), np.shape(vy_p))
 
 
+print('The tidal radius for our problem is: ', r_tidal)
 
 fig, ax = plt.subplots()
 
 # plt.plot(x,y)
-plt.plot(x_p[1,0], y_p[1,0])
+# plt.plot(x_p[1,0], y_p[1,0])
+plt.plot(x_p, y_p)
 xla = plt.xlabel('X-coordinate of the particle')
 yla = plt.ylabel('Y-coordinate of the particle')
 beg = plt.scatter(x[0], y[0], label = 'beginning')

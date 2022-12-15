@@ -56,7 +56,7 @@ Initial conditions
 '''
 
 r_tidal = r_star * (M/m)**(1/3)
-
+print('The tidal radius for our problem is: ', r_tidal)
 # we're gonna use kepler = 2 potential
 # as soon as r<r_isco the orbits become unstable
 
