@@ -14,5 +14,7 @@ from sympy import *
 
 # print(a, type(a))
 a = np.zeros((5,8))
-print(a)
-print(np.shape(a))
+
+for i in range(5):
+    a[i,:] = np.ones(8)
+    print(a)

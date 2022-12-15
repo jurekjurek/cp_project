@@ -192,6 +192,7 @@ def my_rk4(x0, v_x0, y0, v_y0, star, h = 4):
         if np.sqrt(x[i]**2+y[i]**2) <= r_ss:
             x[i] = 0
             y[i] = 0
+            print('######### \n Star passed Schwarzschild radius! \n ########')
             # sets the valus after this time to zero, since it's not going to evolve anymore
             # x = x[:i]
             # y = y[:i]
@@ -359,7 +360,7 @@ def execute():
     '''
     # x_is and y_is will consist of the initial conditions (x and y) for every particle in every layer
     x_is = np.zeros((number_of_layers, number_of_particles))
-    y_is = x_is
+    y_is = np.zeros((number_of_layers, number_of_particles))
 
     # if every star is divided in 5 equal radii, r_layer_list contains the radius for every shell, r[0] for 1st shell, r[1] for 2nd and so on...
     a = r_star/5
@@ -371,23 +372,16 @@ def execute():
         # the positions where the particles are created are dependent on the radius of the shell and 
         # the position of the star at the point where the shell splits up
         x_is_, y_is_ = particles(r_layer_list[i], x_star[i], y_star[i])         # initial positions for particles in i-th layer 
-        
         x_is[i,:] = x_is_
         y_is[i,:] = y_is_
-        # for j in range(number_of_particles):
-        # # iterate over these 8 particles and fill the x_is with the initial conditions 
-        # # for the i-th layer we create j particles
-        #     x_is[i,j] = x_is_[j]
-        #     y_is[i,j] = y_is_[j]
-            
-    print('#########')
-    print(x_star)
-    print('#########')
-    print(r_layer_list[0], x_star[0], y_star[0], r_star*(9/10))
-    print('#########')
-    print(x_is)
-    print('#########')
 
+    '''
+    particles function works
+    '''
+    # print('#####')
+    # print('x_is = ', x_is)
+    # print('y_is = ', y_is)
+    # print('#####')
     '''
     Eom for the particles are solved with the respective initial conditions 
     '''
@@ -400,34 +394,38 @@ def execute():
     vy_final = np.zeros((5,8,len(t)))
     
     print(np.shape(my_x))
-    # for i in range(number_of_layers):
-    #     for j in range(number_of_particles):
-    #         # solve the eom and save the trajectories x and y in x_final and y_final where x_is and y_is are the initial conditions for the [i,j]th particle
-    #         x_final[i,j,:], y_final[i,j,:], vx_final[i,j,:], vy_final[i,j,:] = my_rk4(x_is[i,j], y_is[i,j], vx_star[i], vy_star[i], star=False)
+    for i in range(number_of_layers):
+        for j in range(number_of_particles):
+            # solve the eom and save the trajectories x and y in x_final and y_final where x_is and y_is are the initial conditions for the [i,j]th particle
+            x_final[i,j,:], y_final[i,j,:], vx_final[i,j,:], vy_final[i,j,:] = my_rk4(x_is[i,j], vx_star[i], y_is[i,j], vy_star[i], star=False)
             
     # for only one, test it: (0,0)th
-    print(x_is[0,0], y_is[0,0], x_star[0], y_star[0], vy_star[0], vx_star[0])
-    x_test, y_test, vx_test, vy_test = my_rk4(x_is[0,0], y_is[0,0], vx_star[0], vy_star[0], star=False)
+    # print(x_is[0,0], y_is[0,0], x_star[0], y_star[0], vy_star[0], vx_star[0])
+    # x_test, y_test, vx_test, vy_test = my_rk4(x_is[0,0], vx_star[0], y_is[0,0], vy_star[0], star=False)
 
+    # print('initial conditions for rk that does not seem to work: ', x_is[0,0], y_is[0,0], vx_star[0], vy_star[0])
 
     # so now, we should have: 
     # 40 eoms for 40 particles, all movement in x_final and y_final
     # and 1 eom of the star. The star disappears at some point. 
     
-    # return my_x, my_y, my_vx, my_vy, x_final, y_final, vx_final, vy_final
-    return my_x, my_y, my_vx, my_vy, x_test, y_test, vx_test, vy_test
+    return my_x, my_y, my_vx, my_vy, x_final, y_final, vx_final, vy_final
+    # return my_x, my_y, my_vx, my_vy, x_test, y_test, vx_test, vy_test
 
 x, y, vx, vy, x_p, y_p, vx_p, vy_p = execute()
 print(np.shape(x), np.shape(y), np.shape(vx), np.shape(vy), np.shape(x_p), np.shape(y_p), np.shape(vx_p), np.shape(vy_p))
 
+'''
+Remember: x[0] is outermost, x[4] is innermost layer
+'''
 
 print('The tidal radius for our problem is: ', r_tidal)
 
 fig, ax = plt.subplots()
 
 # plt.plot(x,y)
-# plt.plot(x_p[1,0], y_p[1,0])
-plt.plot(x_p, y_p)
+plt.plot(x_p[4,0], y_p[4,0], label = 'innermost layer')
+plt.plot(x_p[1,0], y_p[1,0], label = 'outermost layer')
 xla = plt.xlabel('X-coordinate of the particle')
 yla = plt.ylabel('Y-coordinate of the particle')
 beg = plt.scatter(x[0], y[0], label = 'beginning')

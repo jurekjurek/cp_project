@@ -71,6 +71,12 @@ v_y0 =  0
 # it actually works...
 v_x0 = np.sqrt(G*M/y0 + 3*G**2*M**2/(y0**2*c**2))
 
+# check for other program
+x0 = 42927922351.34445 
+y0 = 57207775307.18452 
+v_x0 = 34991500.87690325 
+v_y0 = -42473947.183131635
+
 # escape velo, A = G*M
 # we see that for 70% e.g. the particle falls back into the Mass
 # v_x0 = 0
@@ -204,7 +210,7 @@ def my_rk4(h = 0.2):
 
 
         # define black hole radius to be one right now
-        if np.sqrt(x[i]**2+y[i]**2) <= r_tidal:#10**(-17):
+        if np.sqrt(x[i]**2+y[i]**2) <= r_ss:#10**(-17):
             x[i] = 0
             y[i] = 0
             x = x[:i]
