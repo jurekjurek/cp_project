@@ -27,7 +27,7 @@ r_tidal = r_star * (M/m)**(1/3)
 # x0 =    0
 # y0 =    1.2*r_tidal #8*10**9     # close to the isco radius
 
-x0 =    -r_tidal*1
+x0 =    -r_tidal*1.2 
 y0 =    r_tidal*1.5
 
 # v_x0 =  10**8
@@ -38,7 +38,7 @@ v_y0 =  0
 
 # orbit velo for BH
 # it actually works...
-v_x0 = np.sqrt(G*M/y0 + 3*G**2*M**2/(y0**2*c**2))
+v_x0 = np.sqrt(G*M/y0 + 3*G**2*M**2/(y0**2*c**2))*0.7
 
 # escape velo, A = G*M
 # we see that for 70% e.g. the particle falls back into the Mass
@@ -132,7 +132,7 @@ def y_(t,x,y,v_x,v_y):
 
 # the higher h, the more happens / the less detailed
 # which makes sense
-def my_rk4(x0, v_x0, y0, v_y0, star, h = 4):
+def my_rk4(x0, v_x0, y0, v_y0, star, h = 10):
     '''
     This function solves the differential equations (the equation of motion)
     for the x- and y-component of a particle. At each step, we evaluate v[i] for x and y which corresponds to their derivatives 
@@ -207,7 +207,7 @@ def my_rk4(x0, v_x0, y0, v_y0, star, h = 4):
 
             # (a_secure makes sure that we only divide each layer into particles once and makes sure we can only split the i-1 th layer if we already split up the ith layer)
             # outermost (5th) shell:
-            if np.sqrt(x[i]**2+y[i]**2) <= r_tidal*1.02 and a_secure == 0:
+            if np.sqrt(x[i]**2+y[i]**2) <= r_tidal*1.2 and a_secure == 0:
                 x_save[0] = (x[i])
                 y_save[0] = (y[i])
                 vx_save[0] = (v_x[i])
@@ -217,7 +217,7 @@ def my_rk4(x0, v_x0, y0, v_y0, star, h = 4):
                 a_secure = 1
 
             # 4th shell:
-            if np.sqrt(x[i]**2+y[i]**2) <= r_tidal*1.01 and a_secure == 1:
+            if np.sqrt(x[i]**2+y[i]**2) <= r_tidal*1.1 and a_secure == 1:
                 x_save[1] = (x[i])
                 y_save[1] = (y[i])
                 vx_save[1] = (v_x[i])
@@ -239,7 +239,7 @@ def my_rk4(x0, v_x0, y0, v_y0, star, h = 4):
                 a_secure = 3
 
             # 2nd shell:
-            if np.sqrt(x[i]**2+y[i]**2) <= r_tidal*0.99 and a_secure == 3:
+            if np.sqrt(x[i]**2+y[i]**2) <= r_tidal*0.975 and a_secure == 3:
                 x_save[3] = (x[i])
                 y_save[3] = (y[i])
                 vx_save[3] = (v_x[i])
@@ -251,14 +251,23 @@ def my_rk4(x0, v_x0, y0, v_y0, star, h = 4):
 
             # innermost (1st) shell:
             # if the innermost shell turns into particles, the star does not exist anymore as a star, so this runge kutta for-loop stops
-            if np.sqrt(x[i]**2+y[i]**2) <= r_tidal*0.98 and a_secure == 4:
+            if np.sqrt(x[i]**2+y[i]**2) <= r_tidal*0.95 and a_secure == 4:
                 x_save[4] = (x[i])
                 y_save[4] = (y[i])
                 vx_save[4] = (v_x[i])
                 vy_save[4] = (v_y[i]) 
                 
+                # the star is no longer flying at this point, so we shorten its array to the length it has now
+                x[i] = 0
+                y[i] = 0
+                # sets the valus after this time to zero, since it's not going to evolve anymore
+                x = x[:i]
+                y = y[:i]
+                v_x = v_x[:i]
+                v_y = v_y[:i]
+
                 print('a_secure = ', a_secure)  
-                print(x[i], y[i])
+                # print(x[i], y[i])
                 a_secure = 5 
                 break
 
@@ -276,7 +285,7 @@ def my_rk4(x0, v_x0, y0, v_y0, star, h = 4):
 
 # creates 8 particles for each layer in the star 
 
-def particles(r_layer, x_star, y_star, number_of_particles=8):
+def particles(r_layer, x_star, y_star, number_of_particles=8, scale = 20):
     '''
     This function creates initial positions for the particles once the shell splits up
     This initial position is dependent on the position of the star (x_star, y_star)
@@ -311,8 +320,8 @@ def particles(r_layer, x_star, y_star, number_of_particles=8):
     x_is[7] = -1/(np.sqrt(2))
     y_is[7] = 1/(np.sqrt(2))
 
-    x_is = x_is * r_layer
-    y_is = y_is * r_layer
+    x_is = x_is * r_layer*scale
+    y_is = y_is * r_layer*scale
 
     x_is = x_is + x_star    # adding the constant value x_star to the array x_is 
                             # every particle has an initial position relative to the star, then we add the star position to get the global initial position
@@ -416,6 +425,29 @@ x, y, vx, vy, x_p, y_p, vx_p, vy_p = execute()
 print(np.shape(x), np.shape(y), np.shape(vx), np.shape(vy), np.shape(x_p), np.shape(y_p), np.shape(vx_p), np.shape(vy_p))
 
 '''
+Saving files 
+'''
+np.save('x.npy', x)
+np.save('y.npy', y)
+np.save('vx.npy', vx)
+np.save('vy.npy', vy)
+np.save('x_p.npy', x_p)
+np.save('y_p.npy', y_p)
+np.save('vx_p.npy', vx_p)
+np.save('vy_p.npy', vy_p)
+
+
+'''
+Plotting
+'''
+
+
+
+
+
+
+
+'''
 Remember: x[0] is outermost, x[4] is innermost layer
 '''
 
@@ -423,16 +455,19 @@ print('The tidal radius for our problem is: ', r_tidal)
 
 fig, ax = plt.subplots()
 
-# plt.plot(x,y)
+plt.plot(x,y, label = 'Star', color = 'black')
 plt.plot(x_p[4,0], y_p[4,0], label = 'innermost layer')
-plt.plot(x_p[1,0], y_p[1,0], label = 'outermost layer')
+plt.plot(x_p[0,0], y_p[0,0], label = 'outermost layer')
+plt.plot(x_p[1,0], y_p[1,0], label = '4th layer')
+plt.plot(x_p[2,0], y_p[2,0], label = '3rd layer')
+plt.plot(x_p[3,0], y_p[3,0], label = '2nd layer')
 xla = plt.xlabel('X-coordinate of the particle')
 yla = plt.ylabel('Y-coordinate of the particle')
-beg = plt.scatter(x[0], y[0], label = 'beginning')
-end = plt.scatter(x[-1], y[-1], label = 'end')          # last element of x and y
+# beg = plt.scatter(x[0], y[0], label = 'beginning')
+# end = plt.scatter(x[-1], y[-1], label = 'end')          # last element of x and y
 bh = plt.scatter(0,0, label= 'Black Hole', color = 'black')#, s = 300)
-ss = plt.scatter(0,-r_ss, label = 'Schwarzschild radius')
-isco = plt.scatter(0,-r_isco, label = 'isco radius')
+ss = plt.scatter(0,-r_ss, label = 'Schwarzschild radius', s = 5)
+isco = plt.scatter(0,-r_isco, label = 'isco radius', s = 5)
 # tidal = plt.scatter(0,-r_tidal, label = 'Tidal radius for star')
 # if we maybe want to do it more fancy:
 #

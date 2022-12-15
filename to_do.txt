@@ -21,3 +21,5 @@ Star angeht... Die v_x und v_y sind die selben und die x und y sind nicht sehr w
 - Man kann evtl auch die initial conditions für die Teilchen weiter weg vom Stern machen, 
 kinda simulating an explosion that transports the particles farther from star
  
+
+saving the np arrays so i dont have to compile so long each time

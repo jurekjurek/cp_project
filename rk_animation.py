@@ -69,13 +69,13 @@ v_y0 =  0
 
 # orbit velo for BH
 # it actually works...
-v_x0 = np.sqrt(G*M/y0 + 3*G**2*M**2/(y0**2*c**2))
+v_x0 = np.sqrt(G*M/y0 + 3*G**2*M**2/(y0**2*c**2))*0.7
 
 # check for other program
-x0 = 42927922351.34445 
-y0 = 57207775307.18452 
-v_x0 = 34991500.87690325 
-v_y0 = -42473947.183131635
+# x0 = 42927922351.34445 
+# y0 = 57207775307.18452 
+# v_x0 = 34991500.87690325 
+# v_y0 = -42473947.183131635
 
 # escape velo, A = G*M
 # we see that for 70% e.g. the particle falls back into the Mass
@@ -130,7 +130,7 @@ v_x0 = np.sqrt(A/y0)
 # escape velocity for newtonian potential
 # v0 = np.sqrt(2/r0) 
 
-t = np.linspace(0,100000,200000)
+t = np.linspace(0,100000,20000)
 
 t0 = t[0]
 
@@ -167,7 +167,7 @@ def y_(t,x,y,v_x,v_y):
 
 
 
-def my_rk4(h = 0.2):
+def my_rk4(h = 30):
     '''
     This function solves the differential equations (the equation of motion)
     for the x- and y-component of a particle. At each step, we evaluate v[i] for x and y which corresponds to their derivatives 
@@ -235,62 +235,64 @@ print('#########################################################################
 #               Working Animation of the orbit
 ###################################################################################################################################################
 
-# dataSet = np.array([my_x, my_y])
-# numDataPoints = int(len(t)*100)
+dataSet = np.array([my_x, my_y])
+numDataPoints = int(len(t)*100)
 
 
-# def animate_func(num):
-#     # if np.sqrt(dataSet[0,num+1]**2+ dataSet[1,num+1]**2) <= r_Earth:
-#     #     line_ani.event_source.stop()
-#     #     return None
-#     ax.clear()  # Clears the figure to update the line, point,   
-#                 # title, and axes
-#     # ax.plot_su6rface(X_Earth, Y_Earth, Z_Earth, color='green', alpha=0.7)
-#     # Updating Trajectory Line (num+1 due to Python indexing)
-#     ax.plot(dataSet[0, :(num+1)*100], dataSet[1, :(num+1)*100], c='black')
-#     # Updating Point Location 
-#     ax.scatter(dataSet[0, num], dataSet[1, num], 
-#                c='black', marker='o', s = 1)
+def animate_func(num):
+    # if np.sqrt(dataSet[0,num+1]**2+ dataSet[1,num+1]**2) <= r_Earth:
+    #     line_ani.event_source.stop()
+    #     return None
+    ax.clear()  # Clears the figure to update the line, point,   
+                # title, and axes
+    # ax.plot_su6rface(X_Earth, Y_Earth, Z_Earth, color='green', alpha=0.7)
+    # Updating Trajectory Line (num+1 due to Python indexing)
+    ax.plot(dataSet[0, :(num+1)*100], dataSet[1, :(num+1)*100], c='black')
+    # Updating Point Location 
+    ax.scatter(dataSet[0, num], dataSet[1, num], 
+               c='black', marker='o', s = 1)
 
-#     ax.scatter(0,0, label= 'Black Hole', color = 'black')#, s = 300)
-#     ax.scatter(0,-r_isco, label = 'isco radius')
-#     ax.scatter(0,-r_ss, label = 'Schwarzschild radius')
-#     ax.scatter(0,-r_tidal, label = 'Tidal radius for star')
+    ax.scatter(0,0, label= 'Black Hole', color = 'black')#, s = 300)
+    ax.scatter(0,-r_isco, label = 'isco radius')
+    ax.scatter(0,-r_ss, label = 'Schwarzschild radius')
+    # ax.scatter(0,-r_tidal, label = 'Tidal radius for star')
 
-#     # Setting Axes Limits
-#     ax.set_xlim([-y0*2, y0*2])
-#     ax.set_ylim([-y0*2, y0*2])
-#     # ax.set_zlim3d([-10000, 10000])
+    circle = plt.Circle((0,0), r_tidal, color = 'red', fill = False, lw = 2, label = 'Tidal radius')
+    ax.add_patch(circle)
+    # Setting Axes Limits
+    ax.set_xlim([-y0*2, y0*2])
+    ax.set_ylim([-y0*2, y0*2])
+    # ax.set_zlim3d([-10000, 10000])
 
 
-#     # fancier way of limiting, but it doesn't work with the animation
+    # fancier way of limiting, but it doesn't work with the animation
 
-#     # xyzlim = np.array([ax.get_xlim3d(), ax.get_ylim3d(),      
-#     #                ax.get_zlim3d()]).T
-#     # XYZlim = np.asarray([min(xyzlim[0]), max(xyzlim[1])])
-#     # ax.set_xlim3d(XYZlim)
-#     # ax.set_ylim3d(XYZlim)
-#     # ax.set_zlim3d(XYZlim * 3/4)
+    # xyzlim = np.array([ax.get_xlim3d(), ax.get_ylim3d(),      
+    #                ax.get_zlim3d()]).T
+    # XYZlim = np.asarray([min(xyzlim[0]), max(xyzlim[1])])
+    # ax.set_xlim3d(XYZlim)
+    # ax.set_ylim3d(XYZlim)
+    # ax.set_zlim3d(XYZlim * 3/4)
 
-#     # Adding Figure Labels
-#     ax.set_title('Trajectory \nTime = ' + str(np.round(t[num],    
-#                  decimals=2)) + ' sec')
-#     ax.set_xlabel('x')
-#     ax.set_ylabel('y')
-#     ax.legend()
+    # Adding Figure Labels
+    ax.set_title('Trajectory \nTime = ' + str(np.round(t[num],    
+                 decimals=2)) + ' sec')
+    ax.set_xlabel('x')
+    ax.set_ylabel('y')
+    ax.legend()
     
 
 
-# fig = plt.figure()
-# ax = plt.axes()
+fig = plt.figure()
+ax = plt.axes()
 
-# line_ani = animation.FuncAnimation(fig, animate_func, interval=1,   
-#                                    frames=numDataPoints)
-
-
+line_ani = animation.FuncAnimation(fig, animate_func, interval=1,   
+                                   frames=numDataPoints)
 
 
-# plt.show()
+
+
+plt.show()
 
 ###################################################################################################################################################
 #               Simple 2d-plot of trajectory
@@ -339,8 +341,8 @@ circle = plt.Circle((0,0), r_tidal, color = 'red', fill = False, lw = 2, label =
 
 ax.add_patch(circle)
 
-plt.xlim(-y0*2, y0*2)
-plt.ylim(-y0*2, y0*2)
+plt.xlim(-y0*4, y0*4)
+plt.ylim(-y0*4, y0*4)
 plt.title('Motion of the particle in the Kepler field - solved with RK4')
 
 plt.legend(loc = 'upper right')
