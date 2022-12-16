@@ -13,7 +13,7 @@ G = constants.G
 c = constants.speed_of_light
 
 m = 1.989 * 10**30              # mass of the sun in kg
-M = 10**6 * m                   # mass of BH
+M = 4*10**6 * m                   # mass of BH
 
 r_star = 696340*10**3
 
@@ -84,6 +84,7 @@ kepler = False
 # and to 2 for the alternative potential from the paper
 ##############################################################################################################
 
+######## The critical tidal radius, calculated with F_bh = F_selfgrav:
 
 
 
@@ -109,7 +110,7 @@ def v_x_(t,x,y,v_x,v_y):
     elif kepler == 2:
         return -A*x / r**3 - 3*(G*M/c)**2*x / r**4
     else:
-        return -A*x / r**3 - C*x / r**5#+ B*x / r**4 - C*x / r**5
+        return -A*x / r**3 + B*x / r**4 - C*x / r**5
 
 def v_y_(t,x,y,v_x,v_y):
     r = np.sqrt((x**2+y**2))
@@ -118,7 +119,7 @@ def v_y_(t,x,y,v_x,v_y):
     elif kepler == 2:
         return -A*y / r**3 - 3*(G*M/c)**2*y / r**4
     else: 
-        return -A*y / r**3 - C*y / r**5#+ B*y / r**4 - C*y / r**5
+        return -A*y / r**3  + B*y / r**4 - C*y / r**5
 
 # this acts as v = dot(x) and v = dot(y)
 def x_(t,x,y,v_x,v_y):

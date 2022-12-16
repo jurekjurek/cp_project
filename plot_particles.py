@@ -8,8 +8,10 @@ from sympy import *
 G = constants.G
 c = constants.speed_of_light
 
+# We need a supermassive Black hole!!!  
+
 m = 1.989 * 10**30              # mass of the sun in kg
-M = 10**6 * m                   # mass of BH
+M = 4*10**6 * m                   # mass of BH
 
 r_star = 696340*10**3
 
@@ -111,10 +113,10 @@ Animating the star turning into particles
 
 data_star = np.array([x, y])
 data_layer1 = np.array([x_p[0,0], y_p[0,0]])
-data_layer2 = np.array([x_p[1,0], y_p[1,0]])
-data_layer3 = np.array([x_p[2,0], y_p[2,0]])
-data_layer4 = np.array([x_p[3,0], y_p[3,0]])
-data_layer5 = np.array([x_p[4,0], y_p[4,0]])
+data_layer2 = np.array([x_p[1,1], y_p[1,1]])
+data_layer3 = np.array([x_p[2,2], y_p[2,2]])
+data_layer4 = np.array([x_p[3,3], y_p[3,3]])
+data_layer5 = np.array([x_p[4,4], y_p[4,4]])
 numDataPoints = int(len(t)*100)
 
 # time_offset = np.zeros(len(data_star))
@@ -176,8 +178,8 @@ def animate_func(num):
 
 
     # Adding Figure Labels
-    ax.set_title('Trajectory \nTime = ' + str(np.round(t[num],    
-                 decimals=2)) + ' sec')
+    ax.set_title('Trajectory \nTime = ' + str(np.round(t[num]/(3600*24),    
+                 decimals=2)) + ' days')
     ax.set_xlabel('x')
     ax.set_ylabel('y')
     ax.legend()

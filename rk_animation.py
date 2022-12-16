@@ -12,7 +12,7 @@ G = constants.G
 c = constants.speed_of_light
 
 m = 1.989 * 10**30              # mass of the sun in kg
-M = 10**6 * m                   # mass of BH
+M = 4*10**6 * m                   # mass of BH
 
 r_star = 696340*10**3
 
@@ -41,8 +41,8 @@ print('The tidal radius for our problem is: ', r_tidal)
 # we're gonna use kepler = 2 potential
 # as soon as r<r_isco the orbits become unstable
 
-x0 =    -r_tidal*1.2
-y0 =    r_tidal*1.5#8*10**9     # close to the isco radius
+x0 =    -r_tidal
+y0 =    r_tidal#8*10**9     # close to the isco radius
 v_y0 =  0
 
 # orbit velo
@@ -50,8 +50,8 @@ v_y0 =  0
 
 # orbit velo for BH
 # it actually works...
-v_x0 = np.sqrt(G*M/y0 + 3*G**2*M**2/(y0**2*c**2))*0.5
-v_y0 = v_x0 *0.3
+v_x0 = np.sqrt(G*M/y0 + 3*G**2*M**2/(y0**2*c**2))*1
+# v_y0 = -v_x0
 # check for other program
 # x0 = 42927922351.34445 
 # y0 = 57207775307.18452 
@@ -79,6 +79,7 @@ def L(x,y, m):
     r = np.sqrt((x**2+y**2))
     return r*m*v_x0
 L = L(x0, y0, m)
+
 A = G*M
 B = L**2 / m**2             # 0.005
 C = 3*G*M*L**2 / (m**2*c**2)   # 0.8
@@ -91,7 +92,7 @@ r_photon = 1.5 * r_ss
 
 ##############################################################################################################
 #                               Kepler orbit or BH orbit? 
-kepler = False              
+kepler = 2#False              
 # set to True for Newtonian potential, False for BH potential, which does not seem to work at all
 # and to 2 for the alternative potential from the paper
 ##############################################################################################################
@@ -149,7 +150,7 @@ def v_x_(t,x,y,v_x,v_y):
     elif kepler == 2:
         return -A*x / r**3 - 3*(G*M/c)**2*x / r**4
     else:
-        return -A*x / r**3 - C*x / r**5#+ B*x / r**4 - C*x / r**5
+        return -A*x / r**3 + B*x / r**4 - C*x / r**5
 
 def v_y_(t,x,y,v_x,v_y):
     r = np.sqrt((x**2+y**2))
@@ -158,7 +159,7 @@ def v_y_(t,x,y,v_x,v_y):
     elif kepler == 2:
         return -A*y / r**3 - 3*(G*M/c)**2*y / r**4
     else: 
-        return -A*y / r**3 - C*y / r**5#+ B*y / r**4 - C*y / r**5
+        return -A*y / r**3 + B*y / r**4 - C*y / r**5
 # this acts as v = dot(x) and v = dot(y)
 def x_(t,x,y,v_x,v_y):
     return v_x
