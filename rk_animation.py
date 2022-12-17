@@ -12,7 +12,7 @@ G = constants.G
 c = constants.speed_of_light
 
 m = 1.989 * 10**30              # mass of the sun in kg
-M = 4*10**6 * m                   # mass of BH
+M = 8*10**6 * m                   # mass of BH
 
 r_star = 696340*10**3
 
@@ -41,8 +41,8 @@ print('The tidal radius for our problem is: ', r_tidal)
 # we're gonna use kepler = 2 potential
 # as soon as r<r_isco the orbits become unstable
 
-x0 =    -r_tidal
-y0 =    r_tidal#8*10**9     # close to the isco radius
+x0 =    -r_tidal*1.3
+y0 =    r_tidal*1.3#8*10**9     # close to the isco radius
 v_y0 =  0
 
 # orbit velo
@@ -51,6 +51,20 @@ v_y0 =  0
 # orbit velo for BH
 # it actually works...
 v_x0 = np.sqrt(G*M/y0 + 3*G**2*M**2/(y0**2*c**2))*1
+
+x0 =    -r_tidal*1.2 
+y0 =    r_tidal*1.1
+
+# v_x0 =  10**8
+v_y0 =  0
+
+# orbit velo for kepler potential
+# v_x0 = np.sqrt(G*M/y0)
+
+# orbit velo for BH
+# it actually works...
+v_x0 = np.sqrt(G*M/y0 + 3*G**2*M**2/(y0**2*c**2))*0.5
+v_y0 = v_x0 *0.4
 # v_y0 = -v_x0
 # check for other program
 # x0 = 42927922351.34445 
@@ -92,7 +106,7 @@ r_photon = 1.5 * r_ss
 
 ##############################################################################################################
 #                               Kepler orbit or BH orbit? 
-kepler = 2#False              
+kepler = False              
 # set to True for Newtonian potential, False for BH potential, which does not seem to work at all
 # and to 2 for the alternative potential from the paper
 ##############################################################################################################

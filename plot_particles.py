@@ -106,100 +106,161 @@ Plotting
 '''
 Animating the star turning into particles
 '''
+Animation = False
+
+
+def shorten_array(array, anim):
+    '''
+    this function shortens the arrays for plotting so we don't plot the zero values
+    '''
+    if anim == True:
+        for i in range(len(array)):
+            if array[0,i] == 0 and array[1,i] == 0:
+                array = array[:i,:i]
+    if anim == False: 
+        for i in range(len(array)):
+            if i< len(array)-2 and array[i] == 0 and array[i+1] == 0:       # making sure that 
+                array = array[:i]
+                break
+    return array
+
 
 ###################################################################################################################################################
 #               Working Animation of the orbit
 ###################################################################################################################################################
 
-data_star = np.array([x, y])
-data_layer1 = np.array([x_p[0,0], y_p[0,0]])
-data_layer2 = np.array([x_p[1,1], y_p[1,1]])
-data_layer3 = np.array([x_p[2,2], y_p[2,2]])
-data_layer4 = np.array([x_p[3,3], y_p[3,3]])
-data_layer5 = np.array([x_p[4,4], y_p[4,4]])
-numDataPoints = int(len(t)*100)
+if Animation == True:
+    data_star = np.array([x, y])
+    data_layer1 = np.array([x_p[0,0], y_p[0,0]])
+    data_layer2 = np.array([x_p[1,1], y_p[1,1]])
+    data_layer3 = np.array([x_p[2,2], y_p[2,2]])
+    data_layer4 = np.array([x_p[3,3], y_p[3,3]])
+    data_layer5 = np.array([x_p[4,4], y_p[4,4]])
+    numDataPoints = int(len(t)*100)
 
-# time_offset = np.zeros(len(data_star))
-data_layer1 = np.hstack((data_star, data_layer1))
-data_layer2 = np.hstack((data_star, data_layer2))
-data_layer3 = np.hstack((data_star, data_layer3))
-data_layer4 = np.hstack((data_star, data_layer4))
-data_layer5 = np.hstack((data_star, data_layer5))
+    # time_offset = np.zeros(len(data_star))
+    data_layer1 = np.hstack((data_star, data_layer1))
+    data_layer2 = np.hstack((data_star, data_layer2))
+    data_layer3 = np.hstack((data_star, data_layer3))
+    data_layer4 = np.hstack((data_star, data_layer4))
+    data_layer5 = np.hstack((data_star, data_layer5))
 
-def animate_func(num):
-    if num >= 100:
-        line_ani.event_source.stop()
-        return None
-    ax.clear()  # Clears the figure to update the line, point,   
-                # title, and axes
-    # Updating Trajectory Line (num+1 due to Python indexing)
 
-    # Animating the star movement:
-    # if np.sqrt(x[num]**2+y[num]**2) <= r_tidal:
-    # ax.plot(data_star[0, :(num+1)*100], data_star[1, :(num+1)*100], label = 'star', c='black')
-    # # Updating Point Location 
-    # ax.scatter(data_star[0, num], data_star[1, num],  c='black', marker='o', s = 1)
 
-    if True: 
-        ax.plot(data_layer1[0, :(num+1)*100], data_layer1[1, :(num+1)*100], label = 'outermost')#, c='black')
-        # Updating Point Location 
-        ax.scatter(data_layer1[0, num], data_star[1, num], 
-                c='black', marker='o', s = 1)
+    data_layer1 = shorten_array(data_layer1, Animation)
+    print(len(data_layer1))
+    data_layer2 = shorten_array(data_layer2, Animation)
+    data_layer3 = shorten_array(data_layer3, Animation)
+    data_layer4 = shorten_array(data_layer4, Animation)
+    data_layer5 = shorten_array(data_layer5, Animation)
 
-        ax.plot(data_layer2[0, :(num+1)*100], data_layer2[1, :(num+1)*100], label = '4')#, c='black')
-        # Updating Point Location 
-        ax.scatter(data_layer2[0, num], data_star[1, num], 
-                c='black', marker='o', s = 1)
 
-        ax.plot(data_layer3[0, :(num+1)*100], data_layer3[1, :(num+1)*100], label = '3')#, c='black')
-        # Updating Point Location 
-        ax.scatter(data_layer3[0, num], data_star[1, num], 
-                c='black', marker='o', s = 1)
+    def animate_func(num):
+        if num >= 100:
+            line_ani.event_source.stop()
+            return None
+        ax.clear()  # Clears the figure to update the line, point,   
+                    # title, and axes
+        # Updating Trajectory Line (num+1 due to Python indexing)
 
-        ax.plot(data_layer4[0, :(num+1)*100], data_layer4[1, :(num+1)*100], label = '2')#, c='black')
-        # Updating Point Location 
-        ax.scatter(data_layer4[0, num], data_star[1, num], 
-                c='black', marker='o', s = 1)
+        # Animating the star movement:
+        # if np.sqrt(x[num]**2+y[num]**2) <= r_tidal:
+        # ax.plot(data_star[0, :(num+1)*100], data_star[1, :(num+1)*100], label = 'star', c='black')
+        # # Updating Point Location 
+        # ax.scatter(data_star[0, num], data_star[1, num],  c='black', marker='o', s = 1)
 
-        ax.plot(data_layer5[0, :(num+1)*100], data_layer5[1, :(num+1)*100], label = 'innermost')#, c='black')
-        # Updating Point Location 
-        ax.scatter(data_layer5[0, num], data_star[1, num], 
-                c='black', marker='o', s = 1)
+        # if x_p[0,num+1] == 0 or y_p[0,num+1] ==0:
+        #     line_ani.event_source.stop()
 
-    ax.scatter(0,0, label= 'Black Hole', color = 'black')#, s = 300)
-    ax.scatter(0,-r_isco, label = 'isco radius')
-    ax.scatter(0,-r_ss, label = 'Schwarzschild radius')
+        if True: 
+            ax.plot(data_layer1[0, :(num+1)*100], data_layer1[1, :(num+1)*100], label = 'outermost')#, c='black')
+            # Updating Point Location 
+            ax.scatter(data_layer1[0, num], data_star[1, num], 
+                    c='black', marker='o', s = 1)
 
+            ax.plot(data_layer2[0, :(num+1)*100], data_layer2[1, :(num+1)*100], label = '4')#, c='black')
+            # Updating Point Location 
+            ax.scatter(data_layer2[0, num], data_star[1, num], 
+                    c='black', marker='o', s = 1)
+
+            ax.plot(data_layer3[0, :(num+1)*100], data_layer3[1, :(num+1)*100], label = '3')#, c='black')
+            # Updating Point Location 
+            ax.scatter(data_layer3[0, num], data_star[1, num], 
+                    c='black', marker='o', s = 1)
+
+            ax.plot(data_layer4[0, :(num+1)*100], data_layer4[1, :(num+1)*100], label = '2')#, c='black')
+            # Updating Point Location 
+            ax.scatter(data_layer4[0, num], data_star[1, num], 
+                    c='black', marker='o', s = 1)
+
+            ax.plot(data_layer5[0, :(num+1)*100], data_layer5[1, :(num+1)*100], label = 'innermost')#, c='black')
+            # Updating Point Location 
+            ax.scatter(data_layer5[0, num], data_star[1, num], 
+                    c='black', marker='o', s = 1)
+
+        ax.scatter(0,0, label= 'Black Hole', color = 'black')#, s = 300)
+        ax.scatter(0,-r_isco, label = 'isco radius')
+        ax.scatter(0,-r_ss, label = 'Schwarzschild radius')
+
+        circle = plt.Circle((0,0), r_tidal, color = 'red', fill = False, lw = 2, label = 'Tidal radius')
+        ax.add_patch(circle)
+        # Setting Axes Limits
+        ax.set_xlim([-y0*2, y0*2])
+        ax.set_ylim([-y0*2, y0*2])
+
+
+        # Adding Figure Labels
+        ax.set_title('Trajectory \nTime = ' + str(np.round(t[num]/(3600*24),    
+                    decimals=2)) + ' days')
+        ax.set_xlabel('x')
+        ax.set_ylabel('y')
+        ax.legend()
+        
+
+
+    fig = plt.figure()
+    ax = plt.axes()
+
+    line_ani = animation.FuncAnimation(fig, animate_func, interval=1,   
+                                    frames=numDataPoints)
+
+
+    # line_ani.save('particles_anim.gif', fps=10)
+
+    # f = r"particles_animation.gif" 
+    # writergif = animation.PillowWriter(fps=30) 
+    # line_ani.save(f, writer='imagemagick', fps = 30)
+
+
+    plt.show()
+
+if Animation == False:
+    fig, ax = plt.subplots()
+
+    plt.plot(x,y, label = 'Star', color = 'black')
+    plt.plot(shorten_array(x_p[4,0], Animation), shorten_array(y_p[4,0], Animation), label = 'innermost layer')
+    plt.plot(shorten_array(x_p[0,0], Animation), shorten_array(y_p[0,0], Animation), label = 'outermost layer')
+    plt.plot(shorten_array(x_p[1,0], Animation), shorten_array(y_p[1,0], Animation), label = '4th layer')
+    plt.plot(shorten_array(x_p[2,0], Animation), shorten_array(y_p[2,0], Animation), label = '3rd layer')
+    plt.plot(shorten_array(x_p[3,0], Animation), shorten_array(y_p[3,0], Animation), label = '2nd layer')
+    xla = plt.xlabel('X-coordinate of the particle')
+    yla = plt.ylabel('Y-coordinate of the particle')
+    # beg = plt.scatter(x[0], y[0], label = 'beginning')
+    # end = plt.scatter(x[-1], y[-1], label = 'end')          # last element of x and y
+    bh = plt.scatter(0,0, label= 'Black Hole', color = 'black')#, s = 300)
+    ss = plt.scatter(0,-r_ss, label = 'Schwarzschild radius', s = 5)
+    isco = plt.scatter(0,-r_isco, label = 'isco radius', s = 5)
+    # tidal = plt.scatter(0,-r_tidal, label = 'Tidal radius for star')
+    # if we maybe want to do it more fancy:
+    #
     circle = plt.Circle((0,0), r_tidal, color = 'red', fill = False, lw = 2, label = 'Tidal radius')
+
     ax.add_patch(circle)
-    # Setting Axes Limits
-    ax.set_xlim([-y0*2, y0*2])
-    ax.set_ylim([-y0*2, y0*2])
 
+    plt.xlim(-y0*2, y0*2)
+    plt.ylim(-y0*2, y0*2)
+    plt.title('Motion of the particle in the Kepler field - solved with RK4')
 
-    # Adding Figure Labels
-    ax.set_title('Trajectory \nTime = ' + str(np.round(t[num]/(3600*24),    
-                 decimals=2)) + ' days')
-    ax.set_xlabel('x')
-    ax.set_ylabel('y')
-    ax.legend()
-    
+    plt.legend(loc = 'upper right')
 
-
-fig = plt.figure()
-ax = plt.axes()
-
-line_ani = animation.FuncAnimation(fig, animate_func, interval=1,   
-                                   frames=numDataPoints)
-
-
-# line_ani.save('particles_anim.gif', fps=10)
-
-# f = r"particles_animation.gif" 
-# writergif = animation.PillowWriter(fps=30) 
-# line_ani.save(f, writer='imagemagick', fps = 30)
-
-
-plt.show()
-
-
+    plt.show()

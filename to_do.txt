@@ -11,17 +11,19 @@
 
 2 do for tomorrow: 
 
-- look at star turning into only *one* particle
-- es könnte auch einfach keinen Unterschied machen, was die Bewegung eines einzelnen Teilchens im Gegensatz zu einem 
-Star angeht... Die v_x und v_y sind die selben und die x und y sind nicht sehr weit voneinander entfernt leider Gottes
-- Aber morgen für eins!! checken und dann gucken...
-- Vielleicht kann man ja noch einen Wechselwirkungsterm adden
 
+- if a particle is further than 6*r_tidal away or so ... it disappears! 
+- try bh potential for kepler velo 
+- 
 
-- Man kann evtl auch die initial conditions für die Teilchen weiter weg vom Stern machen, 
-kinda simulating an explosion that transports the particles farther from star
- 
+plots we need and die Größen dazu: 
 
-saving the np arrays so i dont have to compile so long each time
+- Kepler orbit animation (Mit r_t, r_isco usw. einfach ein black hole ohne black hole term im potential) 
 
-if a particle is further than 6*r_tidal away or so ... it disappears! 
+- Orbit velo vielleicht kurz erklären
+
+- Add black hole term in Pot 
+	-> look at orbits smaller than isco
+	-> no stable orbits anymore 
+
+- 

@@ -13,9 +13,13 @@ G = constants.G
 c = constants.speed_of_light
 
 m = 1.989 * 10**30              # mass of the sun in kg
-M = 4*10**6 * m                   # mass of BH
+M = 8*10**6 * m                   # mass of BH
 
 r_star = 696340*10**3
+
+
+# global variable to count how many particles escaped
+escape_count = 0
 
 '''
 Initial conditions
@@ -28,7 +32,7 @@ r_tidal = r_star * (M/m)**(1/3)
 # y0 =    1.2*r_tidal #8*10**9     # close to the isco radius
 
 x0 =    -r_tidal*1.2 
-y0 =    r_tidal*1.5
+y0 =    r_tidal*1.1
 
 # v_x0 =  10**8
 v_y0 =  0
@@ -79,7 +83,7 @@ r_tidal = r_star * (M/m)**(1/3)
 
 ##############################################################################################################
 #                               Kepler orbit or BH orbit? 
-kepler = False              
+kepler = 2#False              
 # set to True for Newtonian potential, False for BH potential, which does not seem to work at all
 # and to 2 for the alternative potential from the paper
 ##############################################################################################################
@@ -94,7 +98,7 @@ kepler = False
 # v0 = np.sqrt(2/r0) 
 
 # t = np.linspace(0,100000,10000)
-t = np.linspace(0,1000000000,20000)
+t = np.linspace(0,1000000000,50000)
 t0 = t[0]
 
 h = len(t)
@@ -130,10 +134,9 @@ def y_(t,x,y,v_x,v_y):
 
 
 
-
 # the higher h, the more happens / the less detailed
 # which makes sense
-def my_rk4(x0, v_x0, y0, v_y0, star, h = 10):
+def my_rk4(x0, v_x0, y0, v_y0, star, h = 10, r_threshold = 20*r_tidal):
     '''
     This function solves the differential equations (the equation of motion)
     for the x- and y-component of a particle. At each step, we evaluate v[i] for x and y which corresponds to their derivatives 
@@ -188,6 +191,11 @@ def my_rk4(x0, v_x0, y0, v_y0, star, h = 10):
         v_x[i+1]  = v_x[i] + (k1v_x+2*k2v_x+2*k3v_x+k4v_x)*h/6
         y[i+1]  = y[i] + (k1y+2*k2y+2*k3y+k4y)*h/6
         v_y[i+1]  = v_y[i] + (k1v_y+2*k2v_y+2*k3v_y+k4v_y)*h/6
+
+
+        if np.sqrt(x[i]**2+y[i]**2) > r_threshold:
+            escape_count += 1
+            break 
 
         # if the star (or the particles) passes the ss_radius, it's gone and we cannot describe its motion anymore
         if np.sqrt(x[i]**2+y[i]**2) <= r_ss:
@@ -286,7 +294,7 @@ def my_rk4(x0, v_x0, y0, v_y0, star, h = 10):
 
 # creates 8 particles for each layer in the star 
 
-def particles(r_layer, x_star, y_star, number_of_particles=8, scale = 20):
+def particles(r_layer, x_star, y_star, number_of_particles=8, scale = 10):
     '''
     This function creates initial positions for the particles once the shell splits up
     This initial position is dependent on the position of the star (x_star, y_star)
@@ -423,7 +431,10 @@ def execute():
     # return my_x, my_y, my_vx, my_vy, x_test, y_test, vx_test, vy_test
 
 x, y, vx, vy, x_p, y_p, vx_p, vy_p = execute()
-print(np.shape(x), np.shape(y), np.shape(vx), np.shape(vy), np.shape(x_p), np.shape(y_p), np.shape(vx_p), np.shape(vy_p))
+# print(np.shape(x), np.shape(y), np.shape(vx), np.shape(vy), np.shape(x_p), np.shape(y_p), np.shape(vx_p), np.shape(vy_p))
+
+# This many particles escaped:
+print('This many particles escaped:' ,escape_count)
 
 '''
 Saving files 
