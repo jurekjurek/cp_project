@@ -24,7 +24,7 @@ Initial conditions
 # as soon as r<r_isco the orbits become unstable
 
 x0 =    0
-y0 =    8*10**9     # close to the isco radius
+y0 =    6*10**9     # close to the isco radius
 # v_x0 =  10**8
 v_y0 =  0
 

@@ -26,4 +26,22 @@ plots we need and die Größen dazu:
 	-> look at orbits smaller than isco
 	-> no stable orbits anymore 
 
+okay, what do we actually need? Which plots
+Kepler --> runge_kutta_xy works
+
+switch to black hole: 
+show the kepler orbit velo, show the bh orbit velo, show the instability as soon as we hit isco
+
+we dont see a clear cut at r_isco, but we see that if we get closer the orbits become more unstable, which makes sense
+
+- maybe show that if we're sufficiently far away, the black hole potential also allows orbits with kepler orbit velo, 
+but that must be far
+
+Dont try to figure new stuff out, use the stuff u already did 
+
+particles escape at certain distance, just set it to r = 10 r_tidal oder so 
+Dann plots: jeder layer ein Teilchen einmal
+Und: Jedes Teilchen aus jedem Layer einmal 
+Und: Jedes Teilchen generell einmal. 
+
 - 

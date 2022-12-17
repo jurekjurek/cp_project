@@ -11,8 +11,8 @@ from scipy import constants
 G = constants.G
 c = constants.speed_of_light
 
-m = 1.989 * 10**30/10000              # mass of the sun in kg
-M = 1.989 * 10**30#8*10**6 * m                   # mass of BH
+m = 1.989 * 10**30             # mass of the sun in kg
+M = 10**6*m#8*10**6 * m                   # mass of BH
 
 r_star = 696340*10**3
 
@@ -20,13 +20,6 @@ r_star = 696340*10**3
 Stuff for the black hole
 '''
 
-
-
-
-
-
-# tidal radius
-r_tidal = r_star * (M/m)**(1/3)
 
 
 
@@ -42,48 +35,24 @@ r_ss   = 2*A/c**2
 r_isco = 3*r_ss
 
 r_tidal = r_star * (M/m)**(1/3)
-print('The tidal radius for our problem is: ', r_tidal)
-# we're gonna use kepler = 2 potential
-# as soon as r<r_isco the orbits become unstable
 
-# x0 =    -r_tidal*1.3
-# y0 =    r_tidal*1.3#8*10**9     # close to the isco radius
-# v_y0 =  0
-
-# # orbit velo
-# # v_x0 = np.sqrt(G*M/y0)
-
-# # orbit velo for BH
-# # it actually works...
-# v_x0 = np.sqrt(G*M/y0 + 3*G**2*M**2/(y0**2*c**2))*1
 
 x0 =    0#-r_tidal*1.2 
-y0 =    0.05*r_tidal
+y0 =    5*10**9
 
 # v_x0 =  10**8
 v_y0 =  0
 
 # orbit velo for kepler potential
-# v_x0 = np.sqrt(G*M/y0)
+v_x0 = np.sqrt(G*M/y0)
 
 # orbit velo for BH
-# it actually works...
-
 # v_x0 = np.sqrt(G*M/y0 + 3*G**2*M**2/(y0**2*c**2))#*0.5
-
-
-# v_y0 = v_x0 *0.4
-# v_y0 = -v_x0
-# check for other program
-# x0 = 42927922351.34445 
-# y0 = 57207775307.18452 
-# v_x0 = 34991500.87690325 
-# v_y0 = -42473947.183131635
 
 # escape velo, A = G*M
 # we see that for 70% e.g. the particle falls back into the Mass
 # v_x0 = 0
-# v_y0 = np.sqrt(A*2/y0)*0.7
+# v_y0 = np.sqrt(A*2/y0)
 
 print('vy_0 is ', v_x0/c*100, '% of the speed of light.')
 
@@ -169,19 +138,11 @@ def v_x_(t,x,y,v_x,v_y):
     r = np.sqrt((x**2+y**2))
     if kepler == True:
         return -A*x / r**3 #+ B*x / r**4 - C*x / r**5
-    elif kepler == 2:
-        return -A*x / r**3 - 3*(G*M/c)**2*x / r**4
-    else:
-        return -A*x / r**3 + B*x / r**4 - C*x / r**5
 
 def v_y_(t,x,y,v_x,v_y):
     r = np.sqrt((x**2+y**2))
     if kepler == True:
         return -A*y / r**3 #+ B*y / r**4 - C*y / r**5
-    elif kepler == 2:
-        return -A*y / r**3 - 3*(G*M/c)**2*y / r**4
-    else: 
-        return -A*y / r**3 + B*y / r**4 - C*y / r**5
 # this acts as v = dot(x) and v = dot(y)
 def x_(t,x,y,v_x,v_y):
     return v_x
@@ -254,9 +215,6 @@ def my_rk4(h = 30):
 my_x, my_y, my_v_x, my_v_y = my_rk4()
 my_r = np.sqrt(my_x**2+ my_y**2)
 
-print('#################################################################################################')
-print(len(my_x))
-print('#################################################################################################')
 ###################################################################################################################################################
 #               Working Animation of the orbit
 ###################################################################################################################################################
@@ -324,32 +282,6 @@ plt.show()
 #               Simple 2d-plot of trajectory
 ###################################################################################################################################################
 
-# plt.figure()
-# plt.plot(my_x, my_y)
-
-# plt.xlabel('X-coordinate of the particle')
-# plt.ylabel('Y-coordinate of the particle')
-# plt.scatter(my_x[0], my_y[0], label = 'beginning')
-# plt.scatter(my_x[-1], my_y[-1], label = 'end')
-# plt.scatter(0,0, label= 'Black Hole', color = 'black')#, s = 300)
-# plt.scatter(0,-r_ss, label = 'Schwarzschild radius')
-# plt.scatter(0,-r_tidal, label = 'Tidal radius for star')
-# # if we maybe want to do it more fancy:
-# #
-# # plt.Circle((0,r_tidal), r_tidal, color = 'red', fill = False, lw = 2)
-
-# plt.xlim(-y0*2, y0*2)
-# plt.ylim(-y0*2, y0*2)
-# plt.title('Motion of the particle in the Kepler field - solved with RK4')
-
-# plt.scatter(0,-r_isco, label = 'isco radius')
-# plt.legend(loc = 'upper right')
-
-# plt.show()
-
-
-# plt.figure()
-
 fig, ax = plt.subplots()
 
 plt.plot(my_x, my_y)
@@ -374,30 +306,3 @@ plt.title('Motion of the particle in the Kepler field - solved with RK4')
 plt.legend(loc = 'upper right')
 
 plt.show()
-
-
-
-
-# plt.figure()
-# plt.plot(t[:len(my_x)], my_r)
-# plt.xlabel('Time')
-# plt.ylabel('Solution of r(t)')
-# plt.legend()
-# plt.title('r(t) = $\sqrt{x(t)^2+y(t)^2}$ over time')
-# plt.show()
-
-# plt.figure()
-# plt.plot(t[:len(my_r)], my_v)
-# plt.xlabel('Time')
-# plt.ylabel('Solution of v(t)')
-# plt.show()
-
-
-
-# betrachte als stern
-# sobald r<R_krit:
-# Some testparticles pushed off
-# for n layers of the star 
-# Drimp angucken explizit
-
-
