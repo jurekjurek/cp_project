@@ -50,8 +50,8 @@ r_photon = 1.5*r_ss
 Initial conditions
 '''
 
-x0 = -r_tidal * 6.5
-y0 = r_tidal * 3#3*10**9
+x0 = -r_tidal * 3
+y0 = 2*r_isco #r_tidal * 3#3*10**9
 
 
 
@@ -64,7 +64,7 @@ def orbit_velo():
     if kepler == False:
         return np.sqrt(G*M/y0 + 3*G**2*M**2/(y0**2*c**2))
 
-v_x0 = orbit_velo()*0.7
+v_x0 = orbit_velo()
 v_y0 = 0
 
 

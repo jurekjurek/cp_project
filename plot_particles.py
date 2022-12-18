@@ -109,7 +109,7 @@ Plotting
 '''
 Animating the star turning into particles
 '''
-Animation = False
+Animation = True
 
 
 # def shorten_array(array, anim):

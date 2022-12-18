@@ -55,6 +55,8 @@ Zeig, dass für h = 0.08 das BH-Potential schneller instabil wird wenn wir uns r
 Kepler, wo es sich langsamer ändert. 
 sichtbar für y0 = 2*r_isco, x0 = 0 und orbit velo
 
+the particles do not orbit, but that is to be expected....
+
 
 
 - 
