@@ -5,9 +5,23 @@ from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import animation
 from scipy import constants
 from sympy import *
-# import oct2py
 
-# rk4 only works for 1st order DE
+'''
+This file simulates a Tidal disruption event as well as it is possible given the number of assumptions we have. 
+The interaction between particles is being neglected. 
+The potential of the black hole is not the physical one, but an estimation which works. 
+The ...
+
+'''
+
+##############################################################################################################
+#                                       Kepler orbit or BH orbit? 
+kepler = False            
+# set to True for Newtonian potential, False for BH potential (the alternative potential from the paper)
+##############################################################################################################
+
+
+# Global Constants like G, c, the mass of the star, the mass of the black hole, the radius of the star
 
 G = constants.G
 c = constants.speed_of_light
@@ -18,114 +32,76 @@ M = 8*10**6 * m                   # mass of BH
 r_star = 696340*10**3
 
 
-# global variable to count how many particles escaped
-escape_count = 0
+# Black hole quantities
+
+# tidal radius
+r_tidal = r_star * (M/m)**(1/3)
+
+# Schwarzschild radius
+r_ss   = 2*G*M/c**2
+
+# innermost stable circular orbit
+r_isco = 3*r_ss
+
+# stable photon orbit
+r_photon = 1.5*r_ss
 
 '''
 Initial conditions
 '''
 
-# tidal radius
-r_tidal = r_star * (M/m)**(1/3)
+x0 = -r_tidal * 6.5
+y0 = r_tidal * 3#3*10**9
 
-# x0 =    0
-# y0 =    1.2*r_tidal #8*10**9     # close to the isco radius
 
-x0 =    -r_tidal*1.2 
-y0 =    r_tidal*1.1
 
-# v_x0 =  10**8
-v_y0 =  0
+def orbit_velo():
+    '''
+    returns the orbit velocities depending on potential
+    '''
+    if kepler == True:
+        return np.sqrt(G*M/y0)
+    if kepler == False:
+        return np.sqrt(G*M/y0 + 3*G**2*M**2/(y0**2*c**2))
 
-# orbit velo for kepler potential
-# v_x0 = np.sqrt(G*M/y0)
+v_x0 = orbit_velo()*0.7
+v_y0 = 0
 
-# orbit velo for BH
-# it actually works...
-v_x0 = np.sqrt(G*M/y0 + 3*G**2*M**2/(y0**2*c**2))*0.5
-v_y0 = v_x0 *0.4
-# escape velo, A = G*M
-# we see that for 70% e.g. the particle falls back into the Mass
-# v_x0 = 0
-# v_y0 = np.sqrt(A*2/y0)*0.7
 
 print('vy_0 is ', v_x0/c*100, '% of the speed of light.')
 
-def L(x,y, m):
-    '''
-    function that calculates the angular momentum for given x, y
-    L is constant over time
-    Since at point t = 0, we have only a velocity component in x-direction, so we calculate the L(0) = L(t) to be:
-    '''
-    x = float(x)
-    y = float(y)
-    r = np.sqrt((x**2+y**2))
-    return r*m*v_x0
-
-L = L(x0, y0, m)
-
-
-A = G*M
-B = L**2 / m**2             # 0.005
-C = 3*G*M*L**2 / (m**2*c**2)   # 0.8
-
-
-# things for the Black hole
-
-r_ss   = 2*A/c**2
-r_isco = 3*r_ss
-
-# stable orbit for photons
-r_photon = 1.5 * r_ss
-
-# tidal radius
-r_tidal = r_star * (M/m)**(1/3)
-
-##############################################################################################################
-#                               Kepler orbit or BH orbit? 
-kepler = 2#False              
-# set to True for Newtonian potential, False for BH potential, which does not seem to work at all
-# and to 2 for the alternative potential from the paper
-##############################################################################################################
-
-######## The critical tidal radius, calculated with F_bh = F_selfgrav:
 
 
 
+# define a timescale on which the orbiting happens
+# How much time do we want to calculate the trajectory for? 
+t = np.linspace(0,100000,20000)
 
-
-# escape velocity for newtonian potential
-# v0 = np.sqrt(2/r0) 
-
-# t = np.linspace(0,100000,10000)
-t = np.linspace(0,1000000000,50000)
+# where the time at time zero is the first element in this period (which is zero)
 t0 = t[0]
 
-h = len(t)
 
-
-# as proposed in the paper: 
-# https://arxiv.org/pdf/2008.04922.pdf
+'''
+Since the Runge-Kutta algorithm is only heplful for solving differential equations of first order, 
+we split our two differential equations of second order (one for x, one for y) up in two equations of motion of first order each.
+dot(x) = v
+dot(v) = - grad(Potential)
+'''
 
 def v_x_(t,x,y,v_x,v_y):
     r = np.sqrt((x**2+y**2))
     if kepler == True:
-        return -A*x / r**3 #+ B*x / r**4 - C*x / r**5
-    elif kepler == 2:
-        return -A*x / r**3 - 3*(G*M/c)**2*x / r**4
-    else:
-        return -A*x / r**3 + B*x / r**4 - C*x / r**5
+        return -G*M*x / r**3 
+    if kepler == False:
+        return -G*M*x / r**3 - 3*(G*M/c)**2*x / r**4
 
 def v_y_(t,x,y,v_x,v_y):
     r = np.sqrt((x**2+y**2))
     if kepler == True:
-        return -A*y / r**3 #+ B*y / r**4 - C*y / r**5
-    elif kepler == 2:
-        return -A*y / r**3 - 3*(G*M/c)**2*y / r**4
-    else: 
-        return -A*y / r**3  + B*y / r**4 - C*y / r**5
+        return -G*M*y / r**3 
+    if kepler == False:
+        return -G*M*y / r**3 - 3*(G*M/c)**2*y / r**4
 
-# this acts as v = dot(x) and v = dot(y)
 def x_(t,x,y,v_x,v_y):
     return v_x
 
@@ -133,20 +109,15 @@ def y_(t,x,y,v_x,v_y):
     return v_y
 
 
-
 # the higher h, the more happens / the less detailed
 # which makes sense
-def my_rk4(x0, v_x0, y0, v_y0, star, h = 10, r_threshold = 20*r_tidal):
+def my_rk4(x0, v_x0, y0, v_y0, star, h = 20, r_threshold = 20*r_tidal, escape = False):
     '''
-    This function solves the differential equations (the equation of motion)
-    for the x- and y-component of a particle. At each step, we evaluate v[i] for x and y which corresponds to their derivatives 
-    as well as the derivatives dot(v) for x and y which corresponds to their second order derivatives. 
-    Since for the (i+1)-th step, we need the values of x, y, v_x and v_y for the i-th step, for each step we calculate these 4 values
     star is a variable that tells us what kind of object we are solving the eom for, 
-    star = True: The star that further splits into particles
-    star = False: One particle the star turned into
+    star = True:    The star that further splits into particles
+    star = False:   One particle the star turned into
+    if a particle is farther away from the black hole than r_threshold, it disappears 
     '''
-    # F1,F2,F3,F4 = grav_layer(r_star, m)
     print('#')
     x = np.zeros(len(t))
     v_x = np.zeros(len(t))
@@ -194,19 +165,17 @@ def my_rk4(x0, v_x0, y0, v_y0, star, h = 10, r_threshold = 20*r_tidal):
 
 
         if np.sqrt(x[i]**2+y[i]**2) > r_threshold:
-            escape_count += 1
+            escape = True
+            x[i:] = x[i]
+            y[i:] = y[i]
+            print('The particle escapes!')
             break 
 
         # if the star (or the particles) passes the ss_radius, it's gone and we cannot describe its motion anymore
         if np.sqrt(x[i]**2+y[i]**2) <= r_ss:
             x[i] = 0
             y[i] = 0
-            print('######### \n Star passed Schwarzschild radius! \n ########')
-            # sets the valus after this time to zero, since it's not going to evolve anymore
-            # x = x[:i]
-            # y = y[:i]
-            # v_x = v_x[:i]
-            # v_y = v_y[:i]
+            print('######### \n Object passed Schwarzschild radius! \n ########')
             break
 
         # if we want the eom for the particles, we do not want to divide them up further into more particles
@@ -216,24 +185,21 @@ def my_rk4(x0, v_x0, y0, v_y0, star, h = 10, r_threshold = 20*r_tidal):
 
             # (a_secure makes sure that we only divide each layer into particles once and makes sure we can only split the i-1 th layer if we already split up the ith layer)
             # outermost (5th) shell:
-            if np.sqrt(x[i]**2+y[i]**2) <= r_tidal*1.2 and a_secure == 0:
+            if np.sqrt(x[i]**2+y[i]**2) <= r_tidal*1.1 and a_secure == 0:
                 x_save[0] = (x[i])
                 y_save[0] = (y[i])
                 vx_save[0] = (v_x[i])
                 vy_save[0] = (v_y[i])
-                print('a_secure = ', a_secure)
-                print(x[i], y[i])
+                print('Outermost layer splits')
                 a_secure = 1
 
             # 4th shell:
-            if np.sqrt(x[i]**2+y[i]**2) <= r_tidal*1.1 and a_secure == 1:
+            if np.sqrt(x[i]**2+y[i]**2) <= r_tidal*1.05 and a_secure == 1:
                 x_save[1] = (x[i])
                 y_save[1] = (y[i])
                 vx_save[1] = (v_x[i])
                 vy_save[1] = (v_y[i])
-                
-                print('a_secure = ', a_secure)
-                print(x[i], y[i])
+                print('4th layer splits')
                 a_secure = 2
 
             # 3rd shell:
@@ -242,9 +208,7 @@ def my_rk4(x0, v_x0, y0, v_y0, star, h = 10, r_threshold = 20*r_tidal):
                 y_save[2] = (y[i])
                 vx_save[2] = (v_x[i])
                 vy_save[2] = (v_y[i])
-                
-                print('a_secure = ', a_secure)
-                print(x[i], y[i])
+                print('3rd layer splits')
                 a_secure = 3
 
             # 2nd shell:
@@ -253,9 +217,7 @@ def my_rk4(x0, v_x0, y0, v_y0, star, h = 10, r_threshold = 20*r_tidal):
                 y_save[3] = (y[i])
                 vx_save[3] = (v_x[i])
                 vy_save[3] = (v_y[i])
-                
-                print('a_secure = ', a_secure)
-                print(x[i], y[i])
+                print('2nd layer splits')
                 a_secure = 4
 
             # innermost (1st) shell:
@@ -274,9 +236,7 @@ def my_rk4(x0, v_x0, y0, v_y0, star, h = 10, r_threshold = 20*r_tidal):
                 y = y[:i]
                 v_x = v_x[:i]
                 v_y = v_y[:i]
-
-                print('a_secure = ', a_secure)  
-                # print(x[i], y[i])
+                print('Innermost layer splits')
                 a_secure = 5 
                 break
 
@@ -288,13 +248,13 @@ def my_rk4(x0, v_x0, y0, v_y0, star, h = 10, r_threshold = 20*r_tidal):
             # return x, y, v_x, v_y
         return x, y, v_x, v_y, x_save, y_save, vx_save, vy_save
     if star == False:
-        return x, y, v_x, v_y
+        return x, y, v_x, v_y, escape
 
 
 
 # creates 8 particles for each layer in the star 
 
-def particles(r_layer, x_star, y_star, number_of_particles=8, scale = 10):
+def particles(r_layer, x_star, y_star, number_of_particles=8, scale = 7):
     '''
     This function creates initial positions for the particles once the shell splits up
     This initial position is dependent on the position of the star (x_star, y_star)
@@ -340,13 +300,6 @@ def particles(r_layer, x_star, y_star, number_of_particles=8, scale = 10):
 
 
 
-# print('######### test particle function #########')
-# x = [10,10,10,10,10]
-# x_is, y_is = particles(1, 10, 10)
-# print(x_is, y_is)
-
-# print('######### test particle function #########')
-
 
 def execute():
 
@@ -367,23 +320,17 @@ def execute():
     # my_x, ... describes the actual movement of the star
     my_x, my_y, my_vx, my_vy, x_star, y_star, vx_star, vy_star = my_rk4(x0, v_x0,y0, v_y0, star=True)
 
-    # Wir bekommen die richtigen x_save und y_save von rk4 wieder! 
+    
+    # Create the matrices with the initial conditions 
+    
 
-    print('Das hier sind alle shapes... ', np.shape(x_star), np.shape(y_star), np.shape(vx_star), np.shape(vy_star))
-    print('Und das hier sind die arrays an sich: ', x_star, y_star, vx_star, vy_star)
-    print('####################################')
-
-    '''
-    Create the matrices with the initial conditions 
-    '''
     # x_is and y_is will consist of the initial conditions (x and y) for every particle in every layer
     x_is = np.zeros((number_of_layers, number_of_particles))
     y_is = np.zeros((number_of_layers, number_of_particles))
 
     # if every star is divided in 5 equal radii, r_layer_list contains the radius for every shell, r[0] for 1st shell, r[1] for 2nd and so on...
     a = r_star/5
-    # r_layer_list = np.array([a/2, 3/2*a, 5/2*a, 7/2*a, 9/2*a])
-    # first element in every array considered corresponds to outermost layer
+    # first element in every array corresponds to outermost layer
     r_layer_list = np.array([9/2*a, 7/2*a, 5/2*a, 3/2*a, a/2])
     for i in range(number_of_layers):
         # in every layer we have 8 particles created 
@@ -393,13 +340,7 @@ def execute():
         x_is[i,:] = x_is_
         y_is[i,:] = y_is_
 
-    '''
-    particles function works
-    '''
-    # print('#####')
-    # print('x_is = ', x_is)
-    # print('y_is = ', y_is)
-    # print('#####')
+
     '''
     Eom for the particles are solved with the respective initial conditions 
     '''
@@ -410,12 +351,13 @@ def execute():
     y_final = np.zeros((5,8,len(t)))
     vx_final = np.zeros((5,8,len(t)))
     vy_final = np.zeros((5,8,len(t)))
+    escape = np.zeros((5,8))
     
     print(np.shape(my_x))
     for i in range(number_of_layers):
         for j in range(number_of_particles):
             # solve the eom and save the trajectories x and y in x_final and y_final where x_is and y_is are the initial conditions for the [i,j]th particle
-            x_final[i,j,:], y_final[i,j,:], vx_final[i,j,:], vy_final[i,j,:] = my_rk4(x_is[i,j], vx_star[i], y_is[i,j], vy_star[i], star=False)
+            x_final[i,j,:], y_final[i,j,:], vx_final[i,j,:], vy_final[i,j,:], escape[i,j] = my_rk4(x_is[i,j], vx_star[i], y_is[i,j], vy_star[i], star=False)
             
     # for only one, test it: (0,0)th
     # print(x_is[0,0], y_is[0,0], x_star[0], y_star[0], vy_star[0], vx_star[0])
@@ -427,14 +369,14 @@ def execute():
     # 40 eoms for 40 particles, all movement in x_final and y_final
     # and 1 eom of the star. The star disappears at some point. 
     
-    return my_x, my_y, my_vx, my_vy, x_final, y_final, vx_final, vy_final
+    return my_x, my_y, my_vx, my_vy, x_final, y_final, vx_final, vy_final, escape
     # return my_x, my_y, my_vx, my_vy, x_test, y_test, vx_test, vy_test
 
-x, y, vx, vy, x_p, y_p, vx_p, vy_p = execute()
+x, y, vx, vy, x_p, y_p, vx_p, vy_p, escape = execute()
 # print(np.shape(x), np.shape(y), np.shape(vx), np.shape(vy), np.shape(x_p), np.shape(y_p), np.shape(vx_p), np.shape(vy_p))
 
 # This many particles escaped:
-print('This many particles escaped:' ,escape_count)
+print('This many particles escaped:' ,np.sum(escape), 'out of 40.')
 
 '''
 Saving files 
@@ -447,6 +389,7 @@ np.save('x_p.npy', x_p)
 np.save('y_p.npy', y_p)
 np.save('vx_p.npy', vx_p)
 np.save('vy_p.npy', vy_p)
+np.save('escape.npy', escape)
 
 
 '''
@@ -459,9 +402,9 @@ Plotting
 
 
 
-'''
-Remember: x[0] is outermost, x[4] is innermost layer
-'''
+
+# Remember: x[0] is outermost, x[4] is innermost layer
+
 
 print('The tidal radius for our problem is: ', r_tidal)
 
@@ -473,24 +416,21 @@ plt.plot(x_p[0,0], y_p[0,0], label = 'outermost layer')
 plt.plot(x_p[1,0], y_p[1,0], label = '4th layer')
 plt.plot(x_p[2,0], y_p[2,0], label = '3rd layer')
 plt.plot(x_p[3,0], y_p[3,0], label = '2nd layer')
-xla = plt.xlabel('X-coordinate of the particle')
-yla = plt.ylabel('Y-coordinate of the particle')
-# beg = plt.scatter(x[0], y[0], label = 'beginning')
-# end = plt.scatter(x[-1], y[-1], label = 'end')          # last element of x and y
-bh = plt.scatter(0,0, label= 'Black Hole', color = 'black')#, s = 300)
-ss = plt.scatter(0,-r_ss, label = 'Schwarzschild radius', s = 5)
-isco = plt.scatter(0,-r_isco, label = 'isco radius', s = 5)
-# tidal = plt.scatter(0,-r_tidal, label = 'Tidal radius for star')
-# if we maybe want to do it more fancy:
-#
-circle = plt.Circle((0,0), r_tidal, color = 'red', fill = False, lw = 2, label = 'Tidal radius')
+xla = plt.xlabel('X-coordinate of object')
+yla = plt.ylabel('Y-coordinate of object')
+end = plt.scatter(x[-1], y[-1], label = 'End', s = 100, color = 'yellow')
 
-ax.add_patch(circle)
+bh = plt.Circle((0,0), r_ss, color = 'black', fill = True, lw = 2, label = 'Black hole')
+isco_radius = plt.Circle((0,0), r_isco, color = 'purple', fill = False, lw = 2, label = 'Isco radius')
+tidal_radius = plt.Circle((0,0), r_tidal, color = 'green', fill = False, lw = 2, label = 'Tidal radius')
+ax.add_patch(isco_radius)
+ax.add_patch(bh)
+ax.add_patch(tidal_radius)
 
-plt.xlim(-y0*2, y0*2)
-plt.ylim(-y0*2, y0*2)
-plt.title('Motion of the particle in the Kepler field - solved with RK4')
+plt.xlim(-y0*4, y0*4)
+plt.ylim(-y0*4, y0*4)
 
+plt.title('Star motion in Newtonian potential')
 plt.legend(loc = 'upper right')
 
 plt.show()
