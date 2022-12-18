@@ -24,16 +24,16 @@ Initial conditions
 # as soon as r<r_isco the orbits become unstable
 
 x0 =    0
-y0 =    6*10**9     # close to the isco radius
+y0 =    9*10**9     # close to the isco radius
 # v_x0 =  10**8
 v_y0 =  0
 
 # orbit velo
-# v_x0 = np.sqrt(G*M/y0)
+v_x0 = np.sqrt(G*M/y0)
 
 # orbit velo for BH
 # it actually works...
-v_x0 = np.sqrt(G*M/y0 + 3*G**2*M**2/(y0**2*c**2))
+# v_x0 = np.sqrt(G*M/y0 + 3*G**2*M**2/(y0**2*c**2))
 
 # escape velo, A = G*M
 # we see that for 70% e.g. the particle falls back into the Mass
@@ -75,7 +75,7 @@ r_tidal = r_star * (M/m)**(1/3)
 
 ##############################################################################################################
 #                               Kepler orbit or BH orbit? 
-kepler = 2              
+kepler = True             
 # set to True for Newtonian potential, False for BH potential, which does not seem to work at all
 # and to 2 for the alternative potential from the paper
 ##############################################################################################################

@@ -69,7 +69,7 @@ v_y0 =  0
 # orbit velo for BH
 # it actually works...
 
-# v_x0 = np.sqrt(G*M/y0 + 3*G**2*M**2/(y0**2*c**2))#*0.5
+v_x0 = np.sqrt(G*M/y0 + 3*G**2*M**2/(y0**2*c**2))#*0.5
 
 
 # v_y0 = v_x0 *0.4
@@ -114,7 +114,7 @@ r_photon = 1.5 * r_ss
 
 ##############################################################################################################
 #                               Kepler orbit or BH orbit? 
-kepler = True#False              
+kepler = 2#True#False              
 # set to True for Newtonian potential, False for BH potential, which does not seem to work at all
 # and to 2 for the alternative potential from the paper
 ##############################################################################################################

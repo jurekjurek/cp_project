@@ -44,4 +44,17 @@ Dann plots: jeder layer ein Teilchen einmal
 Und: Jedes Teilchen aus jedem Layer einmal 
 Und: Jedes Teilchen generell einmal. 
 
+
+
+
+data: 
+
+Zeig instabilität von Runge kutta an Erde-Sonne
+
+Zeig, dass für h = 0.08 das BH-Potential schneller instabil wird wenn wir uns r_isco nähern, vergleich mit 
+Kepler, wo es sich langsamer ändert. 
+sichtbar für y0 = 2*r_isco, x0 = 0 und orbit velo
+
+
+
 - 
