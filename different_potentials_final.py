@@ -34,7 +34,7 @@ G = constants.G
 c = constants.speed_of_light
 
 m = 1.989 * 10**30              # mass of the sun in kg
-M = 10**6 * m                   # mass of BH
+M = 8*10**6 * m                   # mass of BH
 
 r_star = 696340*10**3
 
@@ -58,7 +58,7 @@ Initial conditions
 '''
 
 x0 = 0
-y0 = 2*r_isco#3*10**9
+y0 = r_isco#3*10**9
 
 
 
@@ -182,20 +182,20 @@ r = np.sqrt(x**2+ y**2)
 
 # how much did we orbit away during one rotation?
 # print('Is the orbit unstable? The r in the beginning was: ', np.sqrt(x[0]**2 + y[0]**2), 'The r in the end is:', np.sqrt(x[-1]**2 + y[-1]**2))
+# print('The difference between the distance from the BH in the beginning and end is: ', (np.sqrt(x[-1]**2 + y[-1]**2)-np.sqrt(x[0]**2 + y[0]**2))/10**4, 'e4')
 
 def number_rotations():
     '''
-    returns index for that one rotation is done
+    calculates index for that one rotation is done, prints gain in distance after one rotation
     '''
-    for i in range(1,len(x)):
-        if x[i]<x[i+1] and x[i] > x[i-1]:
-            return i
+    for i in range(10,len(x)-1):
+        if x[i]<x[i+1] and x[i] > x[i-1] and y[i] > y[i-1] and y[i] > y[i+1]:
+            print('index of interest: ', i)
+            print('The difference in distance from the BH after one rotation: ', (np.sqrt(x[i]**2 + y[i]**2)-np.sqrt(x[0]**2 + y[0]**2))/10**4, 'e4')
     print('There was no full rotation simulated.')
     return None
-
-
-print('The difference between the distance from the BH in the beginning and end is: ', (np.sqrt(x[number_rotations()]**2 + y[number_rotations()]**2)-np.sqrt(x[0]**2 + y[0]**2))/10**4, 'e4')
-
+    
+number_rotations()
 ###################################################################################################################################################
 #                                                      Working Animation of the orbit
 ###################################################################################################################################################
