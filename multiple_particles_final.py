@@ -50,8 +50,8 @@ r_photon = 1.5*r_ss
 Initial conditions
 '''
 
-x0 = -r_tidal * 3
-y0 = 2*r_isco #r_tidal * 3#3*10**9
+x0 = 0
+y0 = r_tidal*1 #* 3#3*10**9
 
 
 
@@ -64,8 +64,8 @@ def orbit_velo():
     if kepler == False:
         return np.sqrt(G*M/y0 + 3*G**2*M**2/(y0**2*c**2))
 
-v_x0 = orbit_velo()
-v_y0 = 0
+v_x0 = orbit_velo()*0.9
+v_y0 = 0#v_x0 * 0.3
 
 
 print('vy_0 is ', v_x0/c*100, '% of the speed of light.')
@@ -254,7 +254,7 @@ def my_rk4(x0, v_x0, y0, v_y0, star, h = 20, r_threshold = 20*r_tidal, escape = 
 
 # creates 8 particles for each layer in the star 
 
-def particles(r_layer, x_star, y_star, number_of_particles=8, scale = 7):
+def particles(r_layer, x_star, y_star, number_of_particles=8, scale = 10):
     '''
     This function creates initial positions for the particles once the shell splits up
     This initial position is dependent on the position of the star (x_star, y_star)
@@ -430,7 +430,7 @@ ax.add_patch(tidal_radius)
 plt.xlim(-y0*4, y0*4)
 plt.ylim(-y0*4, y0*4)
 
-plt.title('Star motion in Newtonian potential')
+plt.title('Star motion in Black hole potential')
 plt.legend(loc = 'upper right')
 
 plt.show()

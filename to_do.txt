@@ -57,6 +57,8 @@ sichtbar für y0 = 2*r_isco, x0 = 0 und orbit velo
 
 the particles do not orbit, but that is to be expected....
 
+um zu zeigen, was nicht übersichtlich aussieht und weswegen wir das hochskalieren: 
+
 
 
 - 
