@@ -9,9 +9,11 @@ from sympy import *
 '''
 This file simulates a Tidal disruption event as well as it is possible given the number of assumptions we have. 
 The interaction between particles is being neglected. 
-The potential of the black hole is not the physical one, but an estimation which works. 
-The ...
+The potential of the black hole is not the physical one, but an estimation. In the file ...
+the true potential of the black hole is used for kepler = False
 
+It is possible to see the effects of the black hole potential also for the assumption, but since the loss of angular momentum 
+is quite important for the star splitting into particles, we consider the approach in the other file to be our more realistic approach. 
 '''
 
 ##############################################################################################################
@@ -51,7 +53,7 @@ Initial conditions
 '''
 
 x0 = 0
-y0 = r_tidal*1 #* 3#3*10**9
+y0 = r_tidal*1
 
 
 
