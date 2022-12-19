@@ -70,7 +70,7 @@ Animation = True
 # Animation
 
 if Animation == True:
-    layer = 4
+    layer = 1
     star = np.array([x, y])
     layer1 = np.array([x_p[layer,0], y_p[layer,0]])
     layer2 = np.array([x_p[layer,1], y_p[layer,1]])

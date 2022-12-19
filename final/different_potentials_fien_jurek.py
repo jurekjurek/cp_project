@@ -247,32 +247,30 @@ plt.show()
 '''
 Simple 2-d plot of stars trajectory
 '''
+# fig, ax = plt.subplots()
 
 
-fig, ax = plt.subplots()
+# xla = plt.xlabel('X-coordinate of object')
+# yla = plt.ylabel('Y-coordinate of object')
+# end = plt.scatter(x[-1], y[-1], label = 'End', s = 100, color = 'yellow')
 
+# plt.plot(x, y, label = 'Movement of star', color = 'red')
+# bh = plt.Circle((0,0), r_ss, color = 'black', fill = True, lw = 2, label = 'Black hole')
+# isco_radius = plt.Circle((0,0), r_isco, color = 'purple', fill = False, lw = 2, label = 'Isco radius')
+# tidal_radius = plt.Circle((0,0), r_tidal, color = 'green', fill = False, lw = 2, label = 'Tidal radius')
+# ax.add_patch(isco_radius)
+# ax.add_patch(bh)
+# ax.add_patch(tidal_radius)
 
-xla = plt.xlabel('X-coordinate of object')
-yla = plt.ylabel('Y-coordinate of object')
-end = plt.scatter(x[-1], y[-1], label = 'End', s = 100, color = 'yellow')
+# plt.xlim(-y0*4, y0*4)
+# plt.ylim(-y0*4, y0*4)
+# if kepler == True:
+#     plt.title('Star motion in Newtonian potential')
+# if kepler == False: 
+#     plt.title('Star motion in black hole potential')
+# plt.legend(loc = 'upper right')
 
-plt.plot(x, y, label = 'Movement of star', color = 'red')
-bh = plt.Circle((0,0), r_ss, color = 'black', fill = True, lw = 2, label = 'Black hole')
-isco_radius = plt.Circle((0,0), r_isco, color = 'purple', fill = False, lw = 2, label = 'Isco radius')
-tidal_radius = plt.Circle((0,0), r_tidal, color = 'green', fill = False, lw = 2, label = 'Tidal radius')
-ax.add_patch(isco_radius)
-ax.add_patch(bh)
-ax.add_patch(tidal_radius)
-
-plt.xlim(-y0*4, y0*4)
-plt.ylim(-y0*4, y0*4)
-if kepler == True:
-    plt.title('Star motion in Newtonian potential')
-if kepler == False: 
-    plt.title('Star motion in black hole potential')
-plt.legend(loc = 'upper right')
-
-plt.show()
+# plt.show()
 
 
 

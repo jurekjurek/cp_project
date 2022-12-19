@@ -190,26 +190,24 @@ plt.show()
 '''
 2d plot
 '''
+# fig, ax = plt.subplots()
 
 
-fig, ax = plt.subplots()
+# xla = plt.xlabel('X-coordinate of object')
+# yla = plt.ylabel('Y-coordinate of object')
+# # beg = plt.scatter(x[0], y[0], label = 'beginning')
+# end = plt.scatter(x[-1], y[-1], label = 'End', color = 'blue', s = 100)
 
-
-xla = plt.xlabel('X-coordinate of object')
-yla = plt.ylabel('Y-coordinate of object')
-# beg = plt.scatter(x[0], y[0], label = 'beginning')
-end = plt.scatter(x[-1], y[-1], label = 'End', color = 'blue', s = 100)
-
-plt.plot(x, y, label= 'Earth', color = 'green')
-sun = plt.scatter(0,0, label= 'Sun', color = 'yellow', s = 300)
+# plt.plot(x, y, label= 'Earth', color = 'green')
+# sun = plt.scatter(0,0, label= 'Sun', color = 'yellow', s = 300)
     
 
-plt.xlim(-y0*2, y0*2)
-plt.ylim(-y0*2, y0*2)
-plt.title('Movement of earth in the gravitational potential of the sun\n')
-plt.legend(loc = 'upper right')
-plt.savefig('earth_h02.png')
-plt.show()
+# plt.xlim(-y0*2, y0*2)
+# plt.ylim(-y0*2, y0*2)
+# plt.title('Movement of earth in the gravitational potential of the sun\n')
+# plt.legend(loc = 'upper right')
+# plt.savefig('earth_h02.png')
+# plt.show()
 
 
 

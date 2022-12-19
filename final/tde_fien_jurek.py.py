@@ -50,7 +50,7 @@ Initial conditions
 '''
 
 x0 = -r_tidal
-y0 = r_tidal*0.4 #* 3#3*10**9
+y0 = r_tidal*0.7 #* 3#3*10**9
 
 
 
@@ -63,8 +63,8 @@ def orbit_velo():
     if kepler == False:
         return np.sqrt(G*M/y0 + 3*G**2*M**2/(y0**2*c**2))
 
-v_x0 = orbit_velo()*0.8
-v_y0 = 0#-v_x0
+v_x0 = orbit_velo()*0.7
+v_y0 = 0#-0.3*v_x0
 
 
 print('vy_0 is ', v_x0/c*100, '% of the speed of light.')
@@ -182,6 +182,8 @@ def runge_kutta(x0, v_x0, y0, v_y0, star, a, h = 20, r_threshold = 20*r_tidal, e
         k4y =   (y_(    t[i]+ h, x[i]+ h*k3x/2, y[i]+ h*k3y/2, v_x[i]+ h*k3v_x/2, v_y[i]+ h*k3v_y/2))
         k4v_y = (v_y_(  t[i]+ h, x[i]+ h*k3x/2, y[i]+ h*k3y/2, v_x[i]+ h*k3v_x/2, v_y[i]+ h*k3v_y/2, a))
 
+
+        # update the values of x,y,vx and vy
         x[i+1]  = x[i] + (k1x+2*k2x+2*k3x+k4x)*h/6
         v_x[i+1]  = v_x[i] + (k1v_x+2*k2v_x+2*k3v_x+k4v_x)*h/6
         y[i+1]  = y[i] + (k1y+2*k2y+2*k3y+k4y)*h/6
@@ -281,11 +283,13 @@ def runge_kutta(x0, v_x0, y0, v_y0, star, a, h = 20, r_threshold = 20*r_tidal, e
 
 # creates 8 particles for each layer in the star 
 
-def particles(r_layer, x_star, y_star, number_of_particles=8, scale = 20):
+def particles(r_layer, x_star, y_star, number_of_particles=8, scale = 10):
     '''
     This function creates initial positions for the particles once the shell splits up
     This initial position is dependent on the position of the star (x_star, y_star) but not on its velocity
     All particles have the same velocity but different initial positions
+    The variable scale indicates how far away from the center of the scale the particle will be, scale=1 corresponds
+    to the radius of the corresponding shell, shell = 2 corresponds to two times this radius... 
     '''
 
     x_is = np.zeros(number_of_particles)
@@ -340,12 +344,6 @@ def execute():
     number_of_layers = 5
     number_of_particles = 8
 
-
-
-    # we get x_star, y_star, vx_star ... from calling rk 4 for the star 
-    # but! These will also be 1-dim np.arrays with length 5 (for every layer)
-    # so: the velocity of the star when the outermost layer separated was: vx_star[0]
-    # my_x, ... describes the actual movement of the star
     x_star, y_star, vx_star, vy_star, x_initial, y_initial, vx_initial, vy_initial = runge_kutta(x0, v_x0,y0, v_y0, star=True, a=1)
 
     
