@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import animation
 from scipy import constants
-from sympy import *
 
 '''
 This file simply animates or plots the trajectory of the star and the particles it turns into. 

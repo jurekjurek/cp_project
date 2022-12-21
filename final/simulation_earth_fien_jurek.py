@@ -130,17 +130,6 @@ def runge_kutta(x0, v_x0, y0, v_y0, h = 0.2):
         y[i+1]      = y[i]      + (k1y+2*k2y+2*k3y+k4y)*h/6
         v_y[i+1]    = v_y[i]    + (k1v_y+2*k2v_y+2*k3v_y+k4v_y)*h/6
 
-
-        # If the star is passing the Schwarzschild radius, it disappears. 
-        # The loop breaks and the arrays that contain the values for x, y, vx, vy are shortened to the length array[:i]
-        if np.sqrt(x[i]**2+y[i]**2) <= r_ss:
-            x[i] = 0
-            y[i] = 0
-            x = x[:i]
-            y = y[:i]
-            v_x = v_x[:i]
-            v_y = v_y[:i]
-            break
     return x, y, v_x, v_y
 
 

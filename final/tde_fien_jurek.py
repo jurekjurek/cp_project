@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import animation
 from scipy import constants
-from sympy import *
 
 '''
 This file simulates a Tidal disruption event as well as it is possible given the number of assumptions we have.
@@ -49,8 +48,8 @@ r_photon = 1.5*r_ss
 Initial conditions
 '''
 
-x0 = -r_tidal
-y0 = r_tidal*0.7 #* 3#3*10**9
+x0 = -1.5*r_tidal
+y0 = r_tidal #* 3#3*10**9
 
 
 
@@ -64,7 +63,7 @@ def orbit_velo():
         return np.sqrt(G*M/y0 + 3*G**2*M**2/(y0**2*c**2))
 
 v_x0 = orbit_velo()*0.7
-v_y0 = 0#-0.3*v_x0
+v_y0 = -0.2*v_x0
 
 
 print('vy_0 is ', v_x0/c*100, '% of the speed of light.')
