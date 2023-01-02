@@ -27,7 +27,7 @@ print(np.shape(noise))
 # x = np.linspace(0, 1000, len(noise))
 
 # plt.figure()
-# plt.plot(noise)
+# plt.plot(noise[::5])
 # plt.show()
 
 
@@ -78,10 +78,11 @@ def h_of_n(M=50, A=Amp):
 # Apply the impulse response to your generated noise.
 def apply_to_noise():
     h = h_of_n()
-    return np.convolve(h, noise)
+    # return np.convolve(h, noise)
     new_array = np.zeros(len(noise))
     for i in range(len(h)):
-        new_array
+        if 
+        new_array[i] = 
     return new_array
 
 # transform into frequency domain
@@ -89,7 +90,12 @@ def apply_to_noise():
 
 
 convolution = apply_to_noise()
-convolution_f = np.fft.rfft(convolution)
+
+# convolution = convolution[::4]
+
+convolution_f = np.fft.ifft(convolution)
+
+convolution_f = convolution_f[::4]
 print(np.shape(convolution), np.shape(convolution_f))
 plt.figure()
 plt.plot(convolution_f)
