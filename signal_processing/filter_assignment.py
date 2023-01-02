@@ -26,9 +26,9 @@ print(np.shape(noise))
 # works on Macos, the plot does not seem to work on windows, because it's too large
 # x = np.linspace(0, 1000, len(noise))
 
-plt.figure()
-plt.plot(noise)
-plt.show()
+# plt.figure()
+# plt.plot(noise)
+# plt.show()
 
 
 # Implement a low-pass filter of length M=50 with a cutoff frequency of 48 MHz. Calculate the impulse response of the filter.
@@ -89,7 +89,7 @@ def apply_to_noise():
 
 
 convolution = apply_to_noise()
-convolution_f = np.fft.fft(convolution)
+convolution_f = np.fft.rfft(convolution)
 print(np.shape(convolution), np.shape(convolution_f))
 plt.figure()
 plt.plot(convolution_f)
