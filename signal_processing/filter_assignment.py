@@ -23,9 +23,9 @@ noise = random_values(200*10**6, 0.1)
 
 # x = np.linspace(0,1000, len(noise))
 
-# plt.figure()
-# plt.plot(noise)
-# plt.show()
+plt.figure()
+plt.plot(noise)
+plt.show()
 
 
 # Implement a low-pass filter of length M=50 with a cutoff frequency of 48 MHz. Calculate the impulse response of the filter.
