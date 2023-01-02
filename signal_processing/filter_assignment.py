@@ -20,8 +20,11 @@ def random_values(sampling_f, total_length):
     return noise
 
 noise = random_values(200*10**6, 0.1)
+print(np.shape(noise))
 
-# x = np.linspace(0,1000, len(noise))
+# check if noise makes sense
+# works on Macos, the plot does not seem to work on windows, because it's too large
+# x = np.linspace(0, 1000, len(noise))
 
 # plt.figure()
 # plt.plot(noise)
@@ -29,59 +32,53 @@ noise = random_values(200*10**6, 0.1)
 
 
 # Implement a low-pass filter of length M=50 with a cutoff frequency of 48 MHz. Calculate the impulse response of the filter.
+# For a low pass filter, I have to find a h(n) whose Fourier-trafo approximates this desired Freuquency response below(with a cutoff at 48 MHz)
 
-# this is the required fequency response
-noise_f = np.fft.rfft(noise)
-x = np.linspace(0,200*10**6, len(noise_f))
-indices_ = np.where(x > 48*10**6)
-# noise_f[indices_] = 0
 
-# plt.figure()
-# plt.plot(x, noise_f)
-# plt.show()
-
-noise_back = np.fft.irfft(noise_f)
-
-# plt.figure()
-# plt.plot(noise_back)
-# plt.show()
-
-# low pass filter:
-# I have to find a h(n) whose Fourier-trafo approximates this desired Freuquency response above
-
-# for a Filter or length M:
-# N = M+1
-# x(n) = 1/M * X (exp())
-
-# A will be a step function, that only lets values smaller than 48MHz pass (amplitude function)
+# A will be a step function that only lets values smaller than 48MHz pass (amplitude function)
+# 26 = 50/2 + 1 bc of np indexing
 Amp = np.zeros(len(noise))
 Amp = np.zeros(26)
-# Amp[0:int(48*10**6*0.1)] = 1
-Amp[0:int(len(Amp)/4)] = 1
+
+interest = int((48*10**6*0.1)/len(noise) * len(Amp))
+
+Amp[0:interest] = 1
+
+# check if the amplitude function looks right
+
+# plt.figure()
+# plt.plot(Amp)
+# plt.title('Amplitude function; responsible for filtering')
+# plt.show()
+
 
 def h_of_n(M=50, A=Amp):
     N=M+1
-    h_sum = np.zeros(50, dtype='complex_')
+    # the first element in h_sum will be zero, because in this case we only add A[0], which is 1
+    h_sum = np.zeros(26, dtype='complex_')
     z = complex(0,1)
     print(z)
-    h_array = np.zeros(50)
+    h_array = np.zeros(26)
     for i in range(len(h_array)):         # compute ith element of h
         
 
         # if we vary the range of the loop we get completely different stuff
-        for j in range(0,26):
+        for j in range(1,26):
             h_sum[i] += A[j]*np.exp(-z*np.pi*j*((M-2*i)/N))   # hier war vorher das j im exp nicht da 
     
+    
+
     for i in range(len(h_array)):
         h_array[i] = (1/(N) * (A[0] + 2* h_sum[i]))
+    print(h_array)
     return h_array
-
 
 
 
 # Apply the impulse response to your generated noise.
 def apply_to_noise():
     h = h_of_n()
+    return np.convolve(h, noise)
     new_array = np.zeros(len(noise))
     for i in range(len(h)):
         new_array
@@ -92,7 +89,8 @@ def apply_to_noise():
 
 
 convolution = apply_to_noise()
-convolution_f = np.fft.rfft(convolution)
+convolution_f = np.fft.fft(convolution)
+print(np.shape(convolution), np.shape(convolution_f))
 plt.figure()
 plt.plot(convolution_f)
 plt.title('Frequency spectrum of the filtered noise')
