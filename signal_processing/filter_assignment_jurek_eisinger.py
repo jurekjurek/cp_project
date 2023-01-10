@@ -38,34 +38,14 @@ print(np.shape(noise))
 # Implement a low-pass filter of length M=50 with a cutoff frequency of 48 MHz. Calculate the impulse response of the filter.
 # For a low pass filter, I have to find a h(n) whose Fourier-trafo approximates this desired Freuquency response below(with a cutoff at 48 MHz)
 
-
-# A will be a step function that only lets values smaller than 48MHz pass (amplitude function)
-# 26 = 50/2 + 1 bc of np indexing
-Amp = np.zeros(len(noise))
-Amp = np.zeros(26)
-
-interest = int((48)/(200) * len(Amp))
-
-
-Amp[0:interest] = 1
-
-print('#####')
-print(Amp)
-
-# check if the amplitude function looks right
-
-# plt.figure()
-# plt.plot(Amp)
-# plt.title('Amplitude function; responsible for filtering')
-# plt.show()
-
 def impulse_response(M=50):
     '''
     this function calculates the impulse resonse for a given filter length M accroding to the formula derived in class
     '''
     N=M+1
+    # define the step function responsible for letting nothing over a given frequency pass
     A = np.zeros(N) 
-    A[0:int((48)/(200) * len(Amp))]=1
+    A[0:int((48)/(200) * len(A))]=1
 
     # the first element in h_sum will be zero, because in this case we only add A[0], which is 1
     h_sum = np.zeros(N)#, dtype='complex_')
@@ -80,8 +60,10 @@ def impulse_response(M=50):
     return impulse_response/np.sum(impulse_response)
 
 # Apply the impulse response to your generated noise.
-def apply_to_noise(signal = noise):
+def main(signal = noise):
     h = impulse_response()
+
+    # plot the impulse response 
     plt.figure()
     plt.title('Impulse response function of a filter of length 50')
     plt.xlabel('n')
@@ -89,34 +71,21 @@ def apply_to_noise(signal = noise):
     plt.plot(h)
     plt.show()
     
-    return np.convolve(h, signal)
+    convolution =  np.convolve(h, signal)
+    convolution_f = np.fft.rfft(convolution)
 
-# transform into frequency domain
-# A_back = np.fft.rfft(Amp)
+    # plot the noise in the frequency domain after applying the filter (convolving the impulse response with the noise and fourier transforming)
+    plt.figure()
+    plt.plot(convolution)
+    plt.title('Frequency spectrum of the filtered noise')
+    plt.xlabel('Frequency')
+    plt.ylabel('Amplitude')
+    plt.show()
 
+    return None 
 
-convolution = apply_to_noise()
+main()
 
-print(np.shape(convolution))
-
-# plt.figure()
-# plt.plot(np.fft.rfft(noise))
-# plt.show()
-
-# convolution = convolution[::4]
-
-# Make a Fourier transform of your filtered noise and produce a plot of the frequency spectrum.
-# convolution_f = np.fft.rfft(convolution)
-
-# convolution_f = convolution_f[::4]
-# print(np.shape(convolution), np.shape(convolution_f))
-# plt.figure()
-# plt.plot(convolution)
-# plt.title('Frequency spectrum of the filtered noise')
-# plt.xlabel('Frequency')
-# plt.ylabel('Amplitude')
-# plt.show()
-
-# Make a Fourier transform of your filtered noise and produce a plot of the frequency spectrum.
+# Make a Fourier transform of your filtered noise and produce a plot of the frequency spectrum
 
 # Make the same plot for a filter of length M=200 and discuss the results.
