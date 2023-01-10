@@ -117,15 +117,26 @@ def h_of_n_whole(M=50):
     return h_array
 
 # Apply the impulse response to your generated noise.
-def apply_to_noise():
+def apply_to_noise(signal = noise):
     h = h_of_n_whole()
     plt.figure()
-    plt.title('Left half of the Impulse response function')
+    plt.title('Impulse response function of a filter of length 50')
     plt.xlabel('n')
     plt.ylabel('h(n)')
     plt.plot(h)
-    plt.show()
-    return np.convolve(h, noise)
+    # plt.show()
+    print(len(h), len(signal), len(signal)/len(h), len(signal)%len(h))
+    signal = signal[:len(noise)-len(noise)%len(h)]
+    signal_ = np.array(np.split(signal, 51))
+    a = np.zeros(2*int(len(signal/len(h))))
+    print(len(signal_), np.shape(signal_))
+    print(np.shape(h), np.shape(signal_[:,1]))
+    for i in range(int(len(signal)/len(h))):
+        # if (i) >= len(signal_[0,:]):
+        #     print(i)
+            # break
+        a[i:i+101] = np.convolve(h, signal_[:,i])
+    return a 
     # new_array = np.zeros(len(noise))
     # number = len(noise) / len(h)
     # for i in range(len(h)):
