@@ -39,10 +39,10 @@ print(np.shape(noise))
 
 # check if noise makes sense
 # works on Macos, the plot does not seem to work on windows, because it's too large
-x = np.linspace(0, 1000, len(noise))
+# x = np.linspace(0, 1000, len(noise))
 
 # plt.figure()
-# plt.plot(x, noise)
+# plt.plot(noise[::5])
 # plt.show()
 
 
@@ -92,7 +92,7 @@ def h_of_n(M=50, A=Amp):
     print(h_array)
     return h_array
 
-def h_of_n_whole(M=100):
+def h_of_n_whole(M=50  ):
     N=M+1
     A = np.zeros(N) 
     A[0:int((48)/(200) * len(Amp))]=1
@@ -112,7 +112,7 @@ def h_of_n_whole(M=100):
     
 
     for i in range(len(h_array)):
-        h_array[i] = (1/(N) * (A[0] + 2* h_sum[i]))
+        h_array[i] = (1/(N) * (A[0] + 2*h_sum[i]))
     print(h_array)
     return h_array
 
@@ -125,12 +125,12 @@ def apply_to_noise(signal = noise):
     plt.ylabel('h(n)')
     plt.plot(h)
     plt.show()
-    # print(len(h), len(signal), len(signal)/len(h), len(signal)%len(h))
-    # signal = signal[:len(noise)-len(noise)%len(h)]
-    # signal_ = np.array(np.split(signal, len(h)))
-    # a = np.zeros(2*int(len(signal/len(h))))
-    # print(len(signal_), np.shape(signal_))
-    # print(np.shape(h), np.shape(signal_[:,1]))
+    print(len(h), len(signal), len(signal)/len(h), len(signal)%len(h))
+    signal = signal[:len(noise)-len(noise)%len(h)]
+    signal_ = np.array(np.split(signal, 51))
+    a = np.zeros(2*int(len(signal/len(h))))
+    print(len(signal_), np.shape(signal_))
+    print(np.shape(h), np.shape(signal_[:,1]))
     # for i in range(int(len(signal)/len(h))):
     #     print(np.shape(np.convolve(h, signal_[:,i])))
     #     # if (i) >= len(signal_[0,:]):
@@ -152,7 +152,7 @@ def apply_to_noise(signal = noise):
 
 
 convolution = apply_to_noise()
-print(np.shape(convolution))
+
 # plt.figure()
 # plt.plot(np.fft.rfft(noise))
 # plt.show()
@@ -160,22 +160,17 @@ print(np.shape(convolution))
 # convolution = convolution[::4]
 
 # Make a Fourier transform of your filtered noise and produce a plot of the frequency spectrum.
+# convolution_f = np.fft.rfft(convolution)
 
-# it is weirdly plotted because of the wrong x-axis trafo
-convolution_f = np.fft.rfft(convolution)
-print(np.shape(convolution_f))
-x_f = np.fft.rfft(x)
-print(np.shape(x_f), np.shape(x))
-convolution_f = convolution_f[::4]
-print(np.shape(convolution), np.shape(convolution_f))
-plt.figure()
-plt.scatter(np.linspace(0, 200, len(convolution_f)), convolution_f)#, pointsize = 1)
-# plt.plot(x_f, convolution_f)
-# plt.xlim(0, 100*10**6)
-plt.title('Frequency spectrum of the filtered noise')
-plt.xlabel('Frequency')
-plt.ylabel('Amplitude')
-plt.show()
+# convolution_f = convolution_f[::4]
+# print(np.shape(convolution), np.shape(convolution_f))
+# plt.figure()
+# plt.plot(convolution_f)
+# # plt.xlim(0, 100*10**6)
+# plt.title('Frequency spectrum of the filtered noise')
+# plt.xlabel('Frequency')
+# plt.ylabel('Amplitude')
+# plt.show()
 
 # Make a Fourier transform of your filtered noise and produce a plot of the frequency spectrum.
 
