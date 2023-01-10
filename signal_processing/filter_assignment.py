@@ -124,18 +124,21 @@ def apply_to_noise(signal = noise):
     plt.xlabel('n')
     plt.ylabel('h(n)')
     plt.plot(h)
-    # plt.show()
+    plt.show()
     print(len(h), len(signal), len(signal)/len(h), len(signal)%len(h))
     signal = signal[:len(noise)-len(noise)%len(h)]
     signal_ = np.array(np.split(signal, 51))
     a = np.zeros(2*int(len(signal/len(h))))
     print(len(signal_), np.shape(signal_))
     print(np.shape(h), np.shape(signal_[:,1]))
-    for i in range(int(len(signal)/len(h))):
-        # if (i) >= len(signal_[0,:]):
-        #     print(i)
-            # break
-        a[i:i+101] = np.convolve(h, signal_[:,i])
+    # for i in range(int(len(signal)/len(h))):
+    #     print(np.shape(np.convolve(h, signal_[:,i])))
+    #     # if (i) >= len(signal_[0,:]):
+    #     #     print(i)
+    #         # break
+    #     a[i:i+101] = np.convolve(h, signal_[:,i])
+    h = h / np.sum(h)
+    a = np.convolve(h, signal)
     return a 
     # new_array = np.zeros(len(noise))
     # number = len(noise) / len(h)
