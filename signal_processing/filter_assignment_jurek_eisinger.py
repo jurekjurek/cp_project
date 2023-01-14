@@ -25,20 +25,21 @@ def random_values(sampling_f, total_length):
 
 noise = random_values(200*10**6, 0.1)
 print(np.shape(noise))
+print(noise[-1])
 
 # check if noise makes sense
 # works on Macos, the plot does not seem to work on windows, because it's too large
 # x = np.linspace(0, 1000, len(noise))
 
-# plt.figure()
-# plt.plot(noise[::5])
-# plt.show()
+plt.figure()
+plt.plot(noise)
+plt.show()
 
 
 # Implement a low-pass filter of length M=50 with a cutoff frequency of 48 MHz. Calculate the impulse response of the filter.
 # For a low pass filter, I have to find a h(n) whose Fourier-trafo approximates this desired Freuquency response below(with a cutoff at 48 MHz)
 
-def impulse_response(M=50):
+def impulse_response(M):
     '''
     this function calculates the impulse resonse for a given filter length M accroding to the formula derived in class
     '''
@@ -61,30 +62,57 @@ def impulse_response(M=50):
 
 # Apply the impulse response to your generated noise.
 def main(signal = noise):
-    h = impulse_response()
-
+    '''
+    This function generates the plots of the impulse functions calculated above. 
+    The fouriertransformation of the with the impulse response convolved signal is being carried out and plotted 
+    for both filter lengths; 50 and 200. 
+    We see that the filter of length 200 produces a frequency sprectrum that oscillates more rapidly, thus converging 
+    (in the low-pass-filtered, so the high frequency region) faster to zero. 
+    '''
+    h_50 = impulse_response(M=50)
+    h_200 = impulse_response(M=200)
     # plot the impulse response 
     plt.figure()
     plt.title('Impulse response function of a filter of length 50')
     plt.xlabel('n')
     plt.ylabel('h(n)')
-    plt.plot(h)
+    plt.plot(h_50, label = 'M = 50')
+    plt.plot(h_200, label = 'M = 200')
+    plt.legend()
     plt.show()
     
-    convolution =  np.convolve(h, signal)
-    convolution_f = np.fft.rfft(convolution)
+    # return None 
+
+    # convolve impulse function for filter of length 50 with noise
+    convolution_50 =  np.convolve(h_50, signal)
+    convolution_f_50 = np.fft.rfft(convolution_50)
+
+    # convolve impulse function for filter of length 200 with noise
+    convolution_200 =  np.convolve(h_200, signal)
+    convolution_f_200 = np.fft.rfft(convolution_200)
 
     # plot the noise in the frequency domain after applying the filter (convolving the impulse response with the noise and fourier transforming)
     plt.figure()
-    plt.plot(convolution)
-    plt.title('Frequency spectrum of the filtered noise')
+    plt.plot(convolution_f_50, label = 'M = 50', alpha = 0.6, color = 'green')
+    plt.plot(convolution_f_200, label = 'M = 200', alpha = 0.6, color = 'blue')
+    plt.title('Frequency spectrum of the filtered noise for two filter lenghts')
     plt.xlabel('Frequency')
     plt.ylabel('Amplitude')
+    plt.legend() 
     plt.show()
 
     return None 
 
 main()
+
+
+'''
+np.fft.rfftfreq() is the fuction you need für die Grenzen
+'''
+
+
+
+
 
 # Make a Fourier transform of your filtered noise and produce a plot of the frequency spectrum
 
