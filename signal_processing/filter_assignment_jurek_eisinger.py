@@ -23,13 +23,13 @@ def random_values(sampling_f, total_length):
     noise = np.random.random(length)*2-1        # generate random values between -1 and 1
     return noise
 
-noise = random_values(200*10**6, 0.1)
+noise = random_values(200*10**5, 0.1)
 print(np.shape(noise))
 print(noise[-1])
 
 # check if noise makes sense
 # works on Macos, the plot does not seem to work on windows, because it's too large
-# x = np.linspace(0, 1000, len(noise))
+x = np.linspace(0, 1000, len(noise))
 
 plt.figure()
 plt.plot(noise)
@@ -58,7 +58,7 @@ def impulse_response(M):
         impulse_response[i] = (1/(N) * (A[0] + h_sum[i]))
         
     # print(impulse_response)
-    return impulse_response/np.sum(impulse_response)
+    return impulse_response/np.max(impulse_response)#np.sum(impulse_response)
 
 # Apply the impulse response to your generated noise.
 def main(signal = noise):
@@ -93,6 +93,8 @@ def main(signal = noise):
 
     # plot the noise in the frequency domain after applying the filter (convolving the impulse response with the noise and fourier transforming)
     plt.figure()
+    # x_f_50 = np.fft.rfftfreq(2*10**6+50)
+    # x_f_200 = np.fft.rfftfreq(2*10**6+200)
     plt.plot(convolution_f_50, label = 'M = 50', alpha = 0.6, color = 'green')
     plt.plot(convolution_f_200, label = 'M = 200', alpha = 0.6, color = 'blue')
     plt.title('Frequency spectrum of the filtered noise for two filter lenghts')
