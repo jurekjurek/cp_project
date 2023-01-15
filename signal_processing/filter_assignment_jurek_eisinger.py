@@ -54,7 +54,7 @@ def impulse_response(M=50):
     for i in range(N):                                                  # compute ith element of h
         for j in range(1,N):
             h_sum[i] += A[j]*np.exp(-z*np.pi*j*((M-2*i)/N)).real        # ith element of h is sum over all 
-        impulse_response[i] = (1/(N) * (A[0] + h_sum[i]))
+        impulse_response[i] = (1/(N) * (A[0] + 3*h_sum[i]))
         
     # print(impulse_response)
     return impulse_response/np.sum(impulse_response)
@@ -76,7 +76,7 @@ def main(signal = noise):
 
     # plot the noise in the frequency domain after applying the filter (convolving the impulse response with the noise and fourier transforming)
     plt.figure()
-    plt.plot(convolution)
+    plt.plot(convolution_f)
     plt.title('Frequency spectrum of the filtered noise')
     plt.xlabel('Frequency')
     plt.ylabel('Amplitude')
