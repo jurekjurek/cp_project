@@ -1,0 +1,1 @@
+This project is part of one small course, in which a Tidal Disruption Event (TDE), in which a star is torn apart due to its gravitational interaction with a super massive black hole, is modelled using a small animation in Python. 
